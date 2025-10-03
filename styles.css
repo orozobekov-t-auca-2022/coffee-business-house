@@ -1,0 +1,268 @@
+*{
+    font-family: "Inter", sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body{
+    margin: 20px 40px;
+}
+.nav-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style-type: none;
+}
+.nav-logo{
+    height: 60px;
+}
+.nav-logo img {
+    height: 100%;
+}
+.nav-links{
+    width: 100%;
+    max-width: 1188px;
+    display: flex;
+    justify-content: center;
+}
+.nav-links ul {
+    display: flex;
+    list-style-type: none;
+    padding: 0;
+    gap: 40px;
+}
+li a{
+    text-decoration: none;
+    color: rgba(64, 63, 61, 1);
+    font-weight: 600;
+    font-size: 16px;
+}
+.nav-menu{
+    width: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.header-main{
+    width: 100%;
+    position: relative;
+    margin-top: 20px;
+}
+.header-main img{
+    width: 100%;
+    border-radius: 40px;
+}
+.header-text{
+    position: absolute;
+    width: 100%;
+    max-width: 530px;
+    top: 100px;
+    left: 100px;
+}
+h1{
+    color: rgba(225, 212, 201, 1);
+    font-weight: 600;
+    font-size: 72px;
+    margin-bottom: 40px;
+}
+.header-text p{
+    color: rgba(225, 212, 201, 1);
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 150%;
+    font-style: regular;
+    margin-bottom: 40px;
+}
+.header-text button{
+    background-color: rgba(225, 212, 201, 1);
+    width: 200px;
+    height: 64px;
+    border-radius: 100px;
+    color: rgba(64, 63, 61, 1);
+    text-decoration: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 16px;
+}
+#favorite-coffee{
+    margin-top: 100px;
+}
+h2{
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    font-size: 60px;
+    line-height: 125%;
+    color: rgba(64, 63, 61, 1);
+}
+.coffee-cards{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+.coffee-cards h3{
+    font-weight: 600px;
+    font-size: 24px;
+    line-height: 125%;
+    color: rgba(64, 63, 61, 1);
+}
+.coffee-cards p{
+    font-weight: 400px;
+    font-size: 16px;
+    line-height: 150%;
+    color: rgba(64, 63, 61, 1);
+    margin: 16px 0;
+}
+.swipe-left, .swipe-right{
+    border: 1px solid rgba(102, 95, 85, 1);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.coffee-card{
+    width: 480px;
+}
+.coffee-card img{
+    width: 100%;
+    margin: 40px 0 20px 0;
+}
+.coffee-slider{
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    height: 4px;
+}
+.sliders{
+    display: flex;
+    width: 144px;
+    justify-content: space-between;
+    height: 100%;
+}
+#about{
+    margin-top: 100px;
+}
+.about-images{
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(660px, 2fr));
+    grid-auto-rows: 430px;
+    gap: 40px;
+}
+.about-images img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+.firstImg,
+.fourthImg {
+  grid-row: span 2;
+}
+.secondImg,
+.thirdImg {
+  grid-row: span 1;
+}
+#mobile-app{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.mobile-app-text{
+    width: 100%;
+    max-width: 630px;
+}
+.mobile-app-text h2{
+    text-align: start
+}
+.mobile-app-text p{
+    margin: 40px 0;
+    color:rgba(64, 63, 61, 1)
+}
+.download-buttons{
+    display: flex;
+    gap: 20px;
+}
+.download-buttons button{
+    all: unset;
+    width: 200px;
+    height: 64px;
+    border: 1px solid rgba(102, 95, 85, 1);
+    border-radius: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px
+}
+.app-store-text span, .google-play-text span{
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 140%;
+}
+.app-store-text h4, .google-play-text h4{
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 150%;
+}
+footer{
+    background-color: rgba(102, 95, 85, 1);
+    color: rgba(225, 212, 201, 1);
+    border-radius: 40px;
+    display: flex;
+    justify-content: space-between;
+    padding: 100px;
+}
+.footer-logo-and-socials h2{
+    color: rgba(225, 212, 201, 1);
+    width: 100%;
+    max-width: 530px;
+    text-align: start;
+}
+.footer-socials{
+    display: flex;
+    width: 204px;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+.footer-socials button{
+    all: unset;
+    width: 60px;
+    height: 60px;
+    border: 1px solid rgba(193, 182, 173, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.footer-contact-us{
+    width: 530px;
+}
+.footer-contact-us h3{
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 125%;
+    margin-bottom: 40px;
+}
+.footer-contact-us ul{
+    list-style-type: none;
+}
+.footer-contact-us ul li{
+    display: flex;
+    align-self: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.footer-contact-us ul li a{
+    color: rgba(193, 182, 173, 1);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 150%;
+}
