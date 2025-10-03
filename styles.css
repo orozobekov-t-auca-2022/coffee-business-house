@@ -39,10 +39,14 @@ li a{
 }
 .nav-menu{
     width: 72px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+}
+.nav-menu:hover{
+    border-bottom: 2px solid rgba(64, 63, 61, 1);
 }
 .header-main{
     width: 100%;
