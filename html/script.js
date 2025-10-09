@@ -5,6 +5,7 @@ const coffeeList = []
 const teaList = []
 const dessertsList = []
 let category = 'coffee'
+let selectedSize = ''
 
 const coffeeImages = [
     '../assests/coffee-1.png',
@@ -72,18 +73,34 @@ async function loadData() {
 loadData();
 
 function displayProducts(coffeeList) {
-    menuItems.innerHTML = coffeeList.map((element, index) => `
-    <div class="menu-item" data-index="${index}">
-        <img src=${element['image']} />
-        <div class="menu-item-text">
-            <div class="menu-item-title">
-                <h3>${element.name}</h3>
-                <p>${element.description}</p>
+    if(window.innerWidth > 768) {
+        menuItems.innerHTML = coffeeList.map((element, index) => `
+        <div class="menu-item" data-index="${index}">
+            <img src=${element['image']} />
+            <div class="menu-item-text">
+                <div class="menu-item-title">
+                    <h3>${element.name}</h3>
+                    <p>${element.description}</p>
+                </div>
+                <h3 class="menu-item-price">$${element.price}</h3>
             </div>
-            <h3 class="menu-item-price">$${element.price}</h3>
         </div>
-    </div>
-    `).join('');
+        `).join('');
+    } else {
+        
+        menuItems.innerHTML = coffeeList.map((element, index) => `
+        <div class="menu-item" data-index="${index}">
+            <img src=${element['image']} />
+            <div class="menu-item-text">
+                <div class="menu-item-title">
+                    <h3>${element.name}</h3>
+                    <p>${element.description}</p>
+                </div>
+                <h3 class="menu-item-price">$${element.price}</h3>
+            </div>
+        </div>
+        `).join('');
+    }
 }
 
 function filterProducts(category) {
@@ -126,7 +143,10 @@ const modal = document.querySelector('.modal-container');
 menuItemElements.forEach((item) => {
     item.addEventListener('click', (event) => {
         let selectedItem = null;
-    
+        let totalPrice = 0;
+        let priceForSize = 0;
+        let priceForAdditives = 0;
+
         switch(category) {
             case 'coffee':
                 selectedItem = coffeeList[event.target.closest('.menu-item').dataset.index];
@@ -141,24 +161,38 @@ menuItemElements.forEach((item) => {
         }
 
         let sizes = '';
+        let countInd = 0;
         for(let key in selectedItem.sizes) {
-            sizes += `
-                <button class="modal-text-option-btns">
-                    <span class="size">${key.toUpperCase()}</span>
-                    <span>${selectedItem.sizes[key].size}</span>
-                </button>
-            `
+            if (countInd === 0) {
+                sizes += `
+                    <button class="modal-text-option-btns active" data-index="${countInd}">
+                        <span class="size">${key.toUpperCase()}</span>
+                        <span>${selectedItem.sizes[key].size}</span>
+                    </button>
+                `
+            } else {
+                sizes += `
+                    <button class="modal-text-option-btns" data-index="${countInd}">
+                        <span class="size">${key.toUpperCase()}</span>
+                        <span>${selectedItem.sizes[key].size}</span>
+                    </button>
+                `
+            }
+            countInd++;
         }
 
         let additives = '';
         for(let key in selectedItem.additives) {
             additives += `
-                <button class="modal-text-option-btns">
+                <button class="modal-text-option-btns" data-index="${countInd}">
                     <span class="additInd">${key}</span>
                     <span>${selectedItem.additives[key].name}</span>
                 </button>
             `
+            countInd++;
         }
+
+        totalPrice += Number(selectedItem.price) + priceForSize + priceForAdditives
 
         modal.innerHTML = `
             <div class="modal">
@@ -177,7 +211,7 @@ menuItemElements.forEach((item) => {
                         </div>
                         <div class="modal-price">
                             <h3>Total:</h3>
-                            <h3 class="modal-price-text">$${selectedItem.price}</h3>
+                            <h3 class="modal-price-text">$${parseFloat(totalPrice).toFixed(2)}</h3>
                         </div>
                         <div class="modal-disclaimer">
                             <div class="modal-warning-icon">
@@ -214,5 +248,64 @@ menuItemElements.forEach((item) => {
                 modalWindow.style.display = 'none'
             }
         })
-    });
+
+        const sizeButtons = document.querySelectorAll('.sizes .modal-text-option-btns');
+
+        sizeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                sizeButtons.forEach(childBtn => childBtn.classList.remove('active'));
+                button.classList.add('active');
+                selectedSize = button.querySelector('.size').textContent;
+                updateTotalPrice();
+            });
+        });
+
+        const additiveButtons = document.querySelectorAll('.additives .modal-text-option-btns');
+
+        additiveButtons.forEach(button => {
+            button.addEventListener('click', (event, index = 0) => {
+                if (button.classList.contains('active')) {
+                    button.classList.remove('active');
+                } else {
+                    button.classList.add('active');
+                }
+                updateTotalPrice();
+                console.log(totalPrice);
+
+                index++;
+            });
+        });
+
+            function updateTotalPrice() {
+                let basePrice = Number(selectedItem.price);
+                let sizePrice = 0;
+                let additivesPrice = 0;
+
+                if (selectedSize) {
+                    sizePrice = Number(selectedItem.sizes[selectedSize.toLowerCase()]['add-price']);
+                }
+
+                document.querySelectorAll('.additives .modal-text-option-btns.active').forEach(btn => {
+                    const additiveKey = btn.querySelector('.additInd').textContent;
+                    additivesPrice += Number(selectedItem.additives[additiveKey]['add-price']);
+                });
+
+                const total = basePrice + sizePrice + additivesPrice;
+                document.querySelector('.modal-price-text').textContent = `$${total.toFixed(2)}`;
+            }
+        });
+     });
+
+
+const burger = document.querySelector('.burgerBtns');
+const sidebar = document.querySelector('.mobileSidebar');
+const headerMain = document.querySelector('.header-main');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('activeBurger');
+  sidebar.classList.toggle('open');
 });
+
+const closeSidebar = () => {
+  burger.classList.remove('activeBurger');
+  sidebar.classList.remove('open');
+};
