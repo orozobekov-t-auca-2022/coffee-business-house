@@ -1,6 +1,31 @@
 
 const menuItems = document.querySelector('.menu-items');
 
+const swipeElements = [
+    {
+        id: 1,
+        image: './assests/coffee-slider-1.png',
+        title: 'S’mores Frappuccino',
+        description: 'This new drink takes an espresso and mixes it with brown sugar and cinnamon before being topped with oat milk.',
+        price: '$5.50',
+    },
+    {
+        id: 2,
+        image: './assests/coffee-slider-2.png',
+        title: 'Caramel Macchiato',
+        description: 'Fragrant and unique classic espresso with rich caramel-peanut syrup, with cream under whipped thick foam.',
+        price: '$5.00',
+    },
+    {
+        id: 3,
+        image: './assests/coffee-slider-3.png',
+        title: 'Ice coffee',
+        description: 'A popular summer drink that tones and invigorates. Prepared from coffee, milk and ice.',
+        price: '$4.50',
+    }
+]
+let currentSlide = 0;
+
 const coffeeList = []
 const teaList = []
 const dessertsList = []
@@ -9,6 +34,10 @@ let selectedSize = ''
 
 let displayedItems = 4;
 let itemsPerLoad = 4;
+
+let autoSliderInterval;
+const autoSlideDelay = 6000;
+let isAutoSlideActive = true;
 
 const coffeeImages = [
     '../assests/coffee-1.png',
@@ -38,6 +67,190 @@ const teaImages = [
     '../assests/tea-3.png',
     '../assests/tea-4.png',
 ]
+
+const productCard = document.querySelector('.coffee-card');
+const swipeRight = document.querySelector('.swipe-right');
+const swipeLeft = document.querySelector('.swipe-left');
+const sliders = document.querySelector('.sliders');
+console.log(sliders);
+
+if (productCard && swipeLeft && swipeRight && sliders) {
+    swipeLeft.addEventListener('click', () => {
+        currentSlide = (currentSlide + swipeElements.length) % swipeElements.length;
+        updateSlide();
+        resetAutoSlide();
+    });
+
+    swipeRight.addEventListener('click', () => {
+        currentSlide = (currentSlide + 1) % swipeElements.length;
+        updateSlide();
+        resetAutoSlide();
+    });
+
+    function startAutoSlide() {
+        if (isAutoSlideActive) {
+            autoSliderInterval = setInterval(() => {
+                currentSlide = (currentSlide + 1) % swipeElements.length;
+                updateSlide();
+            }, autoSlideDelay);
+        }
+    }
+
+    function resetAutoSlide() {
+        stopAutoSlide();
+        startAutoSlide();
+    }
+
+    productCard.addEventListener('mouseenter', () => {
+        stopAutoSlide();
+    });
+
+    productCard.addEventListener('mouseleave', () => {
+        if (isAutoSlideActive) {
+            startAutoSlide();
+        }
+    });
+    function stopAutoSlide() {
+        if (autoSliderInterval) {
+            clearInterval(autoSliderInterval);
+        }
+    }
+
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+    const minSwipeDistance = 50;
+
+    productCard.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+    });
+
+    productCard.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+    }, { passive: false });
+
+    productCard.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        endY = e.changedTouches[0].clientY;
+        handleSwipe();
+        resetAutoSlide();
+    });
+
+    let isMouseDown = false;
+
+    productCard.addEventListener('mousedown', (e) => {
+        isMouseDown = true;
+        stopAutoSlide();
+        startX = e.clientX;
+        startY = e.clientY;
+        productCard.style.cursor = 'grabbing';
+    });
+
+    productCard.addEventListener('mousemove', (e) => {
+        if (!isMouseDown) return;
+        e.preventDefault();
+    });
+
+    productCard.addEventListener('mouseup', (e) => {
+        if (!isMouseDown) return;
+        isMouseDown = false;
+        endX = e.clientX;
+        endY = e.clientY;
+        productCard.style.cursor = 'grab';
+        handleSwipe();
+        resetAutoSlide();
+    });
+
+    productCard.addEventListener('mouseleave', () => {
+        isMouseDown = false;
+        productCard.style.cursor = 'grab';
+        if (isAutoSlideActive) {
+            startAutoSlide();
+        }
+    });
+
+    function handleSwipe() {
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+            if (deltaX > 0) {
+                currentSlide = (currentSlide - 1 + swipeElements.length) % swipeElements.length;
+            } else {
+                currentSlide = (currentSlide + 1) % swipeElements.length;
+            }
+            updateSlide();
+        }
+    }
+
+    updateSlide()
+    startAutoSlide();
+}
+
+function pauseAutoSlide() {
+    isAutoSlideActive = false;
+    stopAutoSlide();
+}
+
+function resumeAutoSlide() {
+    isAutoSlideActive = true;
+    startAutoSlide();
+}
+
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopAutoSlide();
+    } else if (isAutoSlideActive) {
+        startAutoSlide();
+    }
+});
+
+function updateSlide() {
+    if (!productCard || !sliders) {
+        console.log('Slider elements not found, skipping update');
+        return;
+    }
+
+    productCard.innerHTML = `
+        <img src=${swipeElements[currentSlide].image} alt="">
+        <h3>${swipeElements[currentSlide].title}</h3>
+        <p>${swipeElements[currentSlide].description}</p>
+        <h3>${swipeElements[currentSlide].price}</h3>
+    `;
+    
+    if (sliders && sliders.children.length > 0) {
+        Array.from(sliders.children).forEach(child => {
+            child.innerHTML = `
+                <svg width="40" height="4" viewBox="0 0 40 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="4" rx="2" fill="#C1B6AD"/>
+                </svg>
+            `
+        });
+        
+        if (sliders.children[currentSlide]) {
+            sliders.children[currentSlide].innerHTML = `
+                <svg width="40" height="4" viewBox="0 0 40 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="4" rx="2" fill="#665F55"/>
+                </svg>
+        `;
+            console.log(sliders.children[currentSlide].classList);
+        }
+    }
+}
+
+const navMenu = document.querySelector('.nav-menu');
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.location.pathname.includes('menu.html') || document.title.includes('Menu')) {
+        navMenu.classList.add('activeNav');
+    }
+});
+
+navMenu.addEventListener('click', () =>{
+    navMenu.classList.toggle('activeNav')
+});
 
 async function loadData() {
     let actual_data = await fetch('./products.json').then(response => response.json()).catch(err => console.log(err));
@@ -114,7 +327,9 @@ function displayProducts(productList) {
 }
 
 const loadMoreBtn = document.querySelector('.loadmore-container');
-loadMoreBtn.addEventListener('click', loadMoreItems);
+if (loadMoreBtn) {
+    loadMoreBtn.addEventListener('click', loadMoreItems);   
+}
 
 function loadMoreItems() {
     displayedItems += itemsPerLoad;
@@ -339,6 +554,7 @@ const burger = document.querySelector('.burgerBtns');
 const sidebar = document.querySelector('.mobileSidebar');
 const headerMain = document.querySelector('.header-main');
 burger.addEventListener('click', () => {
+    console.log('click');
   burger.classList.toggle('activeBurger');
   sidebar.classList.toggle('open');
 });
@@ -365,3 +581,11 @@ window.addEventListener('resize', () => {
         displayProducts(currentProductList);
     }
 });
+
+const burgerLinks = document.querySelectorAll('.mobileSidebar ul')
+
+burgerLinks.forEach(link => {
+    link.addEventListener('click', () => {
+        closeSidebar();
+    })
+})

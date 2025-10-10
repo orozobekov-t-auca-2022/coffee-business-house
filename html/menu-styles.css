@@ -4,9 +4,15 @@
     margin: 0;
     padding: 0;
 }
+html {
+    scroll-behavior: smooth;
+    transition: all 0.5s ease;
+}
 body{
     margin: 20px 40px;
     background-color: rgba(225, 212, 201, 1);
+    overflow-x: hidden;
+    position: relative;
 }
 .nav-list {
     display: flex;
@@ -46,9 +52,10 @@ li a{
     justify-content: space-between;
     gap: 8px;
 }
-.nav-menu:hover{
+.nav-menu.activeNav{
     border-bottom: 2px solid rgba(64, 63, 61, 1);
 }
+
 
 h1{
     color: rgba(64, 63, 61, 1);
@@ -125,6 +132,9 @@ h1{
     border: 1px solid rgba(193, 182, 173, 1);
     border-radius: 40px;
     cursor: pointer;
+}
+.menu-item:hover img{
+    transform: scale(0.9);
 }
 .menu-item-text{
     padding: 20px;
@@ -277,6 +287,11 @@ h1{
     height: 44px;
     border-radius: 100px;
     margin-top: 20px;
+    cursor: pointer;
+}
+.close-modal-btn:hover{
+    background-color: rgba(102, 95, 85, 1);
+    color: rgba(225, 212, 201, 1);
 }
 footer{
     background-color: rgba(102, 95, 85, 1);
@@ -332,10 +347,20 @@ footer{
     margin-bottom: 20px;
 }
 .footer-contact-us ul li a{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 4px;
+}
+.footer-contact-us ul li a:hover{
+    border-bottom: 2px solid rgba(225, 212, 201, 1);
+}
+.footer-contact-us ul li a{
     color: rgba(193, 182, 173, 1);
     font-size: 16px;
     font-weight: 600;
     line-height: 150%;
+    display: flex;
 }
 
 .burgerBtns{
@@ -399,6 +424,13 @@ footer{
 }
 .loadmore-container{
     display: none;
+}
+
+@media screen and (min-width: 1441px) {
+    body{
+        margin: 20px auto;
+        width: 1360px;
+    }
 }
 @media screen and (max-width: 768px) {
     body{
@@ -521,6 +553,8 @@ footer{
     }
     .menu-items{
         margin: 40px 0;
+        display: flex;
+        justify-content: center;
     }
     .loadmore-container{
         margin-bottom: 100px;
