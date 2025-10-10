@@ -7,6 +7,9 @@ const dessertsList = []
 let category = 'coffee'
 let selectedSize = ''
 
+let displayedItems = 4;
+let itemsPerLoad = 4;
+
 const coffeeImages = [
     '../assests/coffee-1.png',
     '../assests/coffee-2.png',
@@ -72,9 +75,9 @@ async function loadData() {
 }
 loadData();
 
-function displayProducts(coffeeList) {
+function displayProducts(productList) {
     if(window.innerWidth > 768) {
-        menuItems.innerHTML = coffeeList.map((element, index) => `
+        menuItems.innerHTML = productList.map((element, index) => `
         <div class="menu-item" data-index="${index}">
             <img src=${element['image']} />
             <div class="menu-item-text">
@@ -87,8 +90,8 @@ function displayProducts(coffeeList) {
         </div>
         `).join('');
     } else {
-        
-        menuItems.innerHTML = coffeeList.map((element, index) => `
+        const itemsToShow = productList.slice(0, displayedItems);
+        menuItems.innerHTML = itemsToShow.map((element, index) => `
         <div class="menu-item" data-index="${index}">
             <img src=${element['image']} />
             <div class="menu-item-text">
@@ -100,20 +103,55 @@ function displayProducts(coffeeList) {
             </div>
         </div>
         `).join('');
+        if(displayedItems >= productList.length) {
+            const loadMoreContainer = document.querySelector('.loadmore-container');
+            loadMoreContainer.style.display = 'none';
+        } else {
+            const loadMoreContainer = document.querySelector('.loadmore-container');
+            loadMoreContainer.style.display = 'flex'
+        }
     }
 }
 
-function filterProducts(category) {
+const loadMoreBtn = document.querySelector('.loadmore-container');
+loadMoreBtn.addEventListener('click', loadMoreItems);
+
+function loadMoreItems() {
+    displayedItems += itemsPerLoad;
+    
+    let currentProductList;
     switch(category) {
         case 'coffee':
+            currentProductList = coffeeList;
+            
+            break;
+        case 'tea':
+            currentProductList = teaList;
+            break;
+        case 'dessert':
+            currentProductList = dessertsList;
+            break;
+    }
+    
+    displayProducts(currentProductList);
+}
+
+
+function filterProducts(category) {
+    itemsPerLoad = 4;
+    switch(category) {
+        case 'coffee':
+            displayedItems = 4;
             displayProducts(coffeeList);
             category = 'coffee';
             break;
         case 'tea':
+            displayedItems = 4;
             displayProducts(teaList);
             category = 'tea';
             break;
         case 'dessert':
+            displayedItems = 4;
             displayProducts(dessertsList);
             category = 'dessert';
             break;
@@ -309,3 +347,21 @@ const closeSidebar = () => {
   burger.classList.remove('activeBurger');
   sidebar.classList.remove('open');
 };
+
+window.addEventListener('resize', () => {
+    let currentProductList;
+    switch(category) {
+        case 'coffee':
+            currentProductList = coffeeList;
+            break;
+        case 'tea':
+            currentProductList = teaList;
+            break;
+        case 'dessert':
+            currentProductList = dessertsList;
+            break;
+    }
+    if (currentProductList) {
+        displayProducts(currentProductList);
+    }
+});

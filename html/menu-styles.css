@@ -553,4 +553,37 @@ footer{
         flex-wrap: wrap;
         margin: 0;
     }
+    .loadmore-container{
+        cursor: pointer;
+    }
+}
+
+@media screen and (max-width: 380px) {
+    body{
+        margin: 16px 16px 40px 16px;
+    }
+    h1{
+        font-size: 32px;
+        line-height: 125%;
+    }
+    .menu-items{
+        justify-content: center;
+    }
+    footer{
+        padding: 60px 16px;
+    }
+    .footer-logo-and-socials h2{
+        font-size: 32px;
+        line-height: 125%;
+    }
+    .modal-content{
+        width: 100%;
+        max-width: 342px;
+    }
+    .modal-content img{
+        display: none;
+    }
+    .modal-text{
+        padding: 0;
+    }
 }
