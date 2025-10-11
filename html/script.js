@@ -72,7 +72,6 @@ const productCard = document.querySelector('.coffee-card');
 const swipeRight = document.querySelector('.swipe-right');
 const swipeLeft = document.querySelector('.swipe-left');
 const sliders = document.querySelector('.sliders');
-console.log(sliders);
 
 if (productCard && swipeLeft && swipeRight && sliders) {
     swipeLeft.addEventListener('click', () => {
@@ -235,7 +234,6 @@ function updateSlide() {
                     <rect width="40" height="4" rx="2" fill="#665F55"/>
                 </svg>
         `;
-            console.log(sliders.children[currentSlide].classList);
         }
     }
 }
@@ -253,10 +251,7 @@ navMenu.addEventListener('click', () =>{
 });
 
 async function loadData() {
-    let actual_data = await fetch('./products.json').then(response => response.json()).catch(err => console.log(err));
-
-    console.log(actual_data);
-    
+    let actual_data = await fetch('./products.json').then(response => response.json()).catch(err => console.log(err));    
     for (let el = 0; el < actual_data.length; el++) {
         switch(actual_data[el]['category']) {
             case 'coffee':
@@ -403,7 +398,6 @@ menuItemElements.forEach((item) => {
         switch(category) {
             case 'coffee':
                 selectedItem = coffeeList[event.target.closest('.menu-item').dataset.index];
-                console.log(selectedItem);
                 break;
             case 'tea':
                 selectedItem = teaList[event.target.closest('.menu-item').dataset.index];
@@ -523,8 +517,6 @@ menuItemElements.forEach((item) => {
                     button.classList.add('active');
                 }
                 updateTotalPrice();
-                console.log(totalPrice);
-
                 index++;
             });
         });
@@ -552,16 +544,21 @@ menuItemElements.forEach((item) => {
 
 const burger = document.querySelector('.burgerBtns');
 const sidebar = document.querySelector('.mobileSidebar');
+const sidebarWrapper = document.querySelector('.sidebar-wrapper');
 const headerMain = document.querySelector('.header-main');
-burger.addEventListener('click', () => {
-    console.log('click');
-  burger.classList.toggle('activeBurger');
-  sidebar.classList.toggle('open');
-});
+
+if (burger && sidebar && sidebarWrapper) {
+    burger.addEventListener('click', () => {
+        burger.classList.toggle('activeBurger');
+        sidebarWrapper.classList.toggle('open'); // Переключаем класс у wrapper
+    });
+}
 
 const closeSidebar = () => {
-  burger.classList.remove('activeBurger');
-  sidebar.classList.remove('open');
+    if (burger && sidebarWrapper) {
+        burger.classList.remove('activeBurger');
+        sidebarWrapper.classList.remove('open'); // Убираем класс у wrapper
+    }
 };
 
 window.addEventListener('resize', () => {
@@ -587,5 +584,11 @@ const burgerLinks = document.querySelectorAll('.mobileSidebar ul')
 burgerLinks.forEach(link => {
     link.addEventListener('click', () => {
         closeSidebar();
+        body.classList.remove('sidebar-open');
     })
+})
+
+const headerTextButton = document.querySelector('.header-text button');
+headerTextButton.addEventListener('click', () => {
+    window.location.href = './html/menu.html';
 })
