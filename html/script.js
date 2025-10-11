@@ -588,7 +588,22 @@ burgerLinks.forEach(link => {
     })
 })
 
+const logoLink = document.querySelector('#logo-link');
+if (logoLink) {
+    logoLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const currentPath = window.location.pathname;
+        if (currentPath.includes('/html/')) {
+            window.location.href = '../index.html';
+        } else {
+            window.location.href = './index.html';
+        }
+    });
+}
+
 const headerTextButton = document.querySelector('.header-text button');
-headerTextButton.addEventListener('click', () => {
-    window.location.href = './html/menu.html';
-})
+if (headerTextButton) {
+    headerTextButton.addEventListener('click', () => {
+        window.location.href = './html/menu.html';
+    });
+}
