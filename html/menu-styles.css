@@ -365,6 +365,7 @@ footer{
 
 .burgerBtns{
     display: none;
+    cursor: pointer;
 }
 .mobileSidebar {
     display: none;
