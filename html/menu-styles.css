@@ -370,7 +370,8 @@ footer{
     display: none;
     flex-direction: column;
     padding-top: 60px;    
-    position: fixed;
+    position: absolute;
+    max-width: 100%;
     right: 0;
     width: 100%;
     height: 924px;
@@ -391,7 +392,6 @@ footer{
     flex-direction: column;
     text-align: center;
     gap: 60px;
-    width: 100%;
     padding: 0;
 }
 
@@ -402,7 +402,6 @@ footer{
     font-size: 32px;
     font-weight: 600;
     line-height: 125%;
-    width: 100%;
 }
 .sidebar-nav-menu{
     margin-top: 100px;
@@ -484,18 +483,31 @@ footer{
     .nav-links, .nav-menu{
         display: none;
     }
+    .sidebar-wrapper {
+        position: absolute;
+        max-width: 688px;
+        width: 100%;
+        right: 0;
+        width: 0;
+        height: 924px;
+        overflow: hidden;
+        z-index: 1000;
+        transition: width 0.4s ease-in-out;
+    }
+    
+    .sidebar-wrapper.open {
+        width: 100%;
+    }
+    
     .mobileSidebar{
         display: flex;
-        position: fixed;
-        top: 100px;
-        right: 0;
-        width: 100%;
-        height: 924px;
+        position: relative;
+        left: 0;
+        width: 100vw;
+        height: 100%;
         background-color: rgba(225, 212, 201, 1);
         color: rgba(64, 63, 61, 1);
-        transform: translateX(100%);
-        transition: transform 0.4s ease-in-out;
-        z-index: 1000;
+        transform: none;
     }
     header{
         margin-bottom: 20px;
@@ -591,6 +603,11 @@ footer{
         cursor: pointer;
     }
 }
+@media screen and (max-width: 410px) {
+    .product-options{
+        gap: 7px;
+    }   
+}
 
 @media screen and (max-width: 380px) {
     body{
@@ -619,5 +636,10 @@ footer{
     }
     .modal-text{
         padding: 0;
+    }
+    .product-options{
+        gap: 7px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 }
