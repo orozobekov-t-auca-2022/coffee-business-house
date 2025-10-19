@@ -1,0 +1,41 @@
+import { renderHome } from "./pages/mainPage";
+import { renderMenu } from "./pages/menuPage";
+import { renderCart } from "./pages/cartPage";
+import { renderLogin } from "./pages/login";
+import { renderRegistration } from "./pages/registration";
+
+export function router() {
+  const app = document.querySelector("#app") as HTMLElement;
+
+  const routes: Record<string, () => string> = {
+    "/": renderHome,
+    "/menu": renderMenu,
+    "/cart": renderCart,
+    "/login": renderLogin,
+    "/register": renderRegistration
+  };
+
+  const path = window.location.pathname;
+  const page = routes[path] || renderHome;
+
+  const cartDisplay = document.getElementsByClassName("cartDisplay").item(0);
+
+  if(cartDisplay) {
+    if (page !== renderHome) {
+      cartDisplay.style.visibility = "visible";
+    } else {
+      cartDisplay.style.visibility = "hidden";
+    }
+  }
+
+  app.innerHTML = page();
+
+  document.querySelectorAll("[data-link]").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const target = e.currentTarget as HTMLAnchorElement;
+      history.pushState({}, "", target.href);
+      router();
+    });
+  });
+}
