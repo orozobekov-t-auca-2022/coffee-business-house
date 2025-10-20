@@ -57,7 +57,7 @@ export function renderHome(): string{
                 </div>
 
                 <div class="coffee-card">
-                    
+                    <div id="loader" class="loader hidden"></div>
                 </div>
 
                 <div class="swipe-right">

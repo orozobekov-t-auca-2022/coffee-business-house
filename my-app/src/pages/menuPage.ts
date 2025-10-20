@@ -1,23 +1,21 @@
-
-
 export function renderMenu(): string{
     return `
         <main id="content">
         <section class="product-list">
             <div class="product-list-container">
-                <h1>Behind each of our cups hides an <span style="color: rgba(176, 144, 122, 1); font-style: italic;"> amazing surprise</span></h1>
+                <h1 class="menu-h1">Behind each of our cups hides an <span style="color: rgba(176, 144, 122, 1); font-style: italic;"> amazing surprise</span></h1>
             </div>    
             <div class="product-list-container">
                 <div class="product-options">    
-                    <button id="coffee-btn" class="active" onclick="filterProducts('coffee')">
+                    <button id="coffee-btn" class="active">
                         <span class="product-icon">☕</span>
                         <span>Coffee</span>
                     </button>
-                    <button id="tea-btn" onclick="filterProducts('tea')">
+                    <button id="tea-btn">
                         <span class="product-icon">🫖</span>
                         <span>Tea</span>
                     </button>
-                    <button id="dessert-btn" onclick="filterProducts('dessert')">
+                    <button id="dessert-btn">
                         <span class="product-icon">🍰</span>
                         <span>Dessert</span>
                     </button>
