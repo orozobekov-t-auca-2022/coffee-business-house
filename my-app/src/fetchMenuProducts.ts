@@ -1,8 +1,13 @@
+import fetchDataForCart from "./fetchDataForCart";
 import { coffeeImages } from "./imageDictionaries/coffeeImages";
 import { dessertsImages } from "./imageDictionaries/dessertsImages";
 import { teaImages } from "./imageDictionaries/teaImages";
-import type { Categories, Product } from "./types/product";
+import { renderCart } from "./pages/cartPage";
+import { renderMenu } from "./pages/menuPage";
+import { router } from "./router";
+import { Categories, type Product } from "./types/product";
 
+const currentCategory: Categories = 'coffee';
 let products : Product[] = []
 const coffeeProducts: Product[] = []
 const teaProducts: Product[] = []
@@ -10,19 +15,27 @@ const dessertProducts: Product[] = []
 
 export default async function fetchMenuProducts(): Promise<Product[]> {
     try{
-        const response = await fetch(import.meta.env.VITE_COFFEE_API_KEY + '/products').then(res => res.json());
-        products = response['data'];
+        const response = await fetch(import.meta.env.VITE_COFFEE_API_KEY + '/products');
+        if(!response.ok) {
+            throw new Error('caught error')
+        }
+        const data = await response.json();
+        products = data['data'];
         return products;
     } catch (error) {
-        console.error('Error fetching menu products:', error);
-        throw error;
+        console.log(error)
+        const modalContainer = document.querySelector('.modal-container')
+        modalContainer!.innerHTML = `
+            <div>
+                <p>Something went wrong. Please, refresh the page</p>
+            </div>
+        ` 
     }
 }
 
 function sortProductsByCategories(): void {
-    console.log(products);
+    console.log("sorting products by categories")
     for(const el in products) {
-        console.log(el)
         if(products[el].category === 'coffee') {
             coffeeProducts.push(products[el])
         } else if(products[el].category === 'tea') {
@@ -53,7 +66,9 @@ export function displayProductsByCategory(category: Categories): void {
     }
     menuItemsContainer!.innerHTML = categoryProducts.map(e => `
         <div class="menu-item">
-            <img src="${productImages[e.name]}" alt="menu-item-photo" />
+            <div class="menu-item-img">
+                <img src="${productImages[e.name]}" alt="menu-item-photo" />
+            </div>
             <div class="menu-item-text">
                 <div class="menu-item-title">
                     <h3>${e.name}</h3>
@@ -70,32 +85,253 @@ export function displayProductsByCategory(category: Categories): void {
 window.addEventListener("DOMContentLoaded", async() => {
     await fetchMenuProducts();
     sortProductsByCategories();
-    // if (window.location.pathname === "/menu") {
-    //     displayProductsByCategory("coffee");
-    // }
-    displayProductsByCategory('coffee');
+    const menuBtn = document.querySelector(".nav-menu");
+    menuBtn?.addEventListener('click', (event) => {
+        event.preventDefault();
+        document.getElementsByClassName("content")[0].innerHTML = renderMenu();
+        displayProductsByCategory(Categories.Coffee);
+    })
+    if (window.location.pathname === "/menu") {
+        displayProductsByCategory(Categories.Tea);
+    }
+    displayProductsByCategory(Categories.Dessert);
     const coffeeBtn = document.getElementById('coffee-btn');
     const teaBtn = document.getElementById('tea-btn');
     const dessertBtn = document.getElementById('dessert-btn');
+    
     coffeeBtn?.addEventListener('click', () => {
         makeActiveButton('coffee-btn');
-        filterProducts('coffee');
+        filterProducts(Categories.Coffee);
+        currentProduct = coffeeProducts;
     });
     teaBtn?.addEventListener('click', () => {
         makeActiveButton('tea-btn');
-        filterProducts('tea');
+        filterProducts(Categories.Tea);
+        currentProduct = teaProducts;
     });
     dessertBtn?.addEventListener('click', () => {
         makeActiveButton('dessert-btn');
-        filterProducts('dessert');
+        filterProducts(Categories.Dessert);
+        currentProduct = dessertProducts;
     });
+
+    let currentProduct = coffeeProducts;
+    if(currentCategory === 'coffee') {
+        currentProduct = coffeeProducts;
+    } else if (currentCategory === 'tea') {
+        currentProduct = teaProducts;
+    } else if (currentCategory === 'dessert') {
+        currentProduct = dessertProducts
+    }
+    attachModalListeners(currentProduct, currentCategory)
 })
 
 function filterProducts(category: Categories): void {
     const menuItemsContainer = document.querySelector(".menu-items");
     menuItemsContainer!.innerHTML = '';
     displayProductsByCategory(category);
+
+    let currentProducts: Product[] = [];
+    if (category === "coffee") currentProducts = coffeeProducts;
+    else if (category === "tea") currentProducts = teaProducts;
+    else currentProducts = dessertProducts;
+
+    attachModalListeners(currentProducts, category)
 }
+
+function attachModalListeners(currentProducts: Product[], currentCategory: Categories) {
+  const menuProducts = document.querySelectorAll(".menu-item");
+  const modalContainer = document.querySelector(".modal-container") as HTMLElement;
+
+  menuProducts.forEach((item, i) => {
+    item.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/products/${currentProducts[i].id}`);
+        const productData = await res.json();
+        const product = productData.data;
+        let selectedItem = product;
+
+        let selectedSize = null;
+        console.log(product)
+
+        let image = coffeeImages[currentProducts[i].name];
+        if (currentCategory === "tea") image = teaImages[currentProducts[i].name];
+        else if (currentCategory === "dessert") image = dessertsImages[currentProducts[i].name];
+
+        let sizes = '';
+        let countInd = 0;
+        for(let key in product.sizes) {
+            if (countInd === 0) {
+                sizes += `
+                    <button class="modal-text-option-btns active" data-index="${countInd}">
+                        <span class="size">${key.toUpperCase()}</span>
+                        <span>${product.sizes[key].size}</span>
+                    </button>
+                `
+            } else {
+                sizes += `
+                    <button class="modal-text-option-btns" data-index="${countInd}">
+                        <span class="size">${key.toUpperCase()}</span>
+                        <span>${product.sizes[key].size}</span>
+                    </button>
+                `
+            }
+            countInd++;
+        }
+
+        let additives = '';
+        for(const key in product.additives) {
+            additives += `
+                <button class="modal-text-option-btns" data-index="${countInd}">
+                    <span class="additInd">${key}</span>
+                    <span>${product.additives[key].name}</span>
+                </button>
+            `
+            countInd++;
+        }
+
+        let totalPrice = 0;
+        const priceForSize = 0;
+        const priceForAdditives = 0;
+        totalPrice += Number(selectedItem.price) + priceForSize + priceForAdditives
+        console.log(totalPrice)
+        modalContainer.innerHTML = `
+            <div class="modal">
+                <div class="modal-content">
+                    <img src=${image} alt=""/>
+                    <div class="modal-text">
+                        <h3>${currentProducts[i]['name']}</h3>
+                        <p>${currentProducts[i]['description']}</p>
+                        <label>Size</label>
+                        <div class="sizes">
+                            ${sizes}
+                        </div>
+
+                        <label>Additives</label>
+                        <div class="additives">
+                            ${additives}
+                        </div>
+                        <div class="modal-price">
+                            <h3>Total:</h3>
+                            <h3 class="modal-price-text">$${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                        </div>
+                        <button class="add-to-cart-btn">Add to Cart</button>
+                    </div>
+                    <button class="close-modal-button">
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.34326 1.34314L12.657 12.6568" stroke="#E1D4C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M1.34326 12.6569L12.657 1.34315" stroke="#E1D4C9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const closeButton = document.querySelector(".close-modal-button");
+        closeButton?.addEventListener("click", () => {
+            modalContainer.innerHTML = "";
+        });
+        const addToCartButton = document.querySelector(".add-to-cart-btn");
+        addToCartButton?.addEventListener("click", () => {
+            const formData = {
+                ...selectedItem,
+                'image': currentCategory === "coffee" ? coffeeImages[currentProducts[i].name] :
+                          currentCategory === "tea" ? teaImages[currentProducts[i].name] :
+                          dessertsImages[currentProducts[i].name],
+                'selectedSize': product.sizes[selectedSize.toLowerCase()],
+                'selectedAdditives': Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).map(btn => {
+                    const additiveKey = btn.querySelector('.additInd').textContent;
+                    return product.additives[additiveKey];
+                })
+            }
+            // Add the selected item to the cart
+            if(localStorage.getItem('cartItems')){
+                localStorage.setItem('cartItems', JSON.stringify([...JSON.parse(localStorage.getItem('cartItems') as string), formData]));
+            } else {
+                localStorage.setItem('cartItems', JSON.stringify([formData]));
+            }
+
+            addToCart(formData);
+            modalContainer.innerHTML = "";
+        });
+
+        const modalWindow = document.querySelector('.modal')
+        modalWindow?.addEventListener('click', (e) => {
+            if(e.target === modalWindow) {
+                modalContainer.innerHTML = ''
+            }
+        })
+
+        document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape') {
+                modalContainer.innerHTML = ''
+            }
+        });
+        const sizeButtons = document.querySelectorAll('.sizes .modal-text-option-btns');
+
+        sizeButtons!.forEach(button => {
+            button.addEventListener('click', () => {
+                sizeButtons!.forEach(childBtn => childBtn.classList.remove('active'));
+                button.classList.add('active');
+                selectedSize = button.querySelector('.size')?.textContent;
+                updateTotalPrice();
+            });
+        });
+
+
+    
+
+        const additiveButtons = document.querySelectorAll('.additives .modal-text-option-btns');
+
+        additiveButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('active')) {
+                    button.classList.remove('active');
+                } else {
+                    button.classList.add('active');
+                }
+                updateTotalPrice();
+            });
+        });
+
+
+        function updateTotalPrice() {
+            let basePrice = Number(selectedItem.price);
+            let sizePrice = 0;
+            let additivesPrice = 0;
+
+            console.log(Number(product['sizes'][selectedSize.toLowerCase()]['price']))
+            if (selectedSize) {
+                sizePrice = Number(product['sizes'][selectedSize.toLowerCase()]['price']);
+            }
+
+            document.querySelectorAll('.additives .modal-text-option-btns.active').forEach(btn => {
+                const additiveKey = btn.querySelector('.additInd').textContent;
+                additivesPrice += Number(product['additives'][additiveKey]['price']);
+            });
+
+            const total = sizePrice + additivesPrice;
+            document.querySelector('.modal-price-text').textContent = `$${total.toFixed(2)}`;
+        }
+
+        const cartItems = document.querySelector('.cartDisplay') as HTMLElement;
+        cartItems.addEventListener('click', (e) => {
+            e.preventDefault();
+            history.pushState({}, "", '/cart');
+            router();
+        });
+      } catch (err) {
+        console.log(err);
+        modalContainer.innerHTML = `
+            <div>
+                <p>Something went wrong. Please, refresh the page</p>
+            </div>
+        ` 
+      }
+    });
+  });
+}
+
 
 function makeActiveButton(selectedButtonId: string): void {
     const coffeeBtn = document.getElementById('coffee-btn')!;
@@ -114,4 +350,12 @@ function makeActiveButton(selectedButtonId: string): void {
         teaBtn.classList.remove('active');
         dessertBtn.classList.add('active');
     }
+}
+
+
+function addToCart(item: Product): void {
+    const productsInCart = localStorage.getItem('cartItems');
+    const cartItems = document.querySelector('.productsAmount') as HTMLElement;
+    cartItems.innerHTML = '';
+    cartItems.innerHTML = `${productsInCart ? JSON.parse(productsInCart).length : 0}`
 }

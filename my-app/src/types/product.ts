@@ -2,7 +2,7 @@ export enum Categories {
     Coffee = "coffee",
     Tea = "tea",
     Dessert = "dessert"
-} as const;
+};
 
 export type Categories = (typeof Categories)[keyof typeof Categories]
 

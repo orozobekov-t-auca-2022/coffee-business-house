@@ -3,6 +3,7 @@ import { renderMenu } from "./pages/menuPage";
 import { renderCart } from "./pages/cartPage";
 import { renderLogin } from "./pages/login";
 import { renderRegistration } from "./pages/registration";
+import fetchDataForCart from "./fetchDataForCart";
 
 export function router() {
   const app = document.querySelector("#app") as HTMLElement;
@@ -30,6 +31,10 @@ export function router() {
 
   app.innerHTML = page();
 
+  if(path === '/cart') {
+    fetchDataForCart();
+  }
+
   document.querySelectorAll("[data-link]").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -38,4 +43,7 @@ export function router() {
       router();
     });
   });
+
+  const event = new CustomEvent("pageLoaded", { detail: { path } });
+  document.dispatchEvent(event);
 }

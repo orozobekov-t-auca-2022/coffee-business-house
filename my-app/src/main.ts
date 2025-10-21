@@ -1,14 +1,15 @@
 import { coffeeImages } from "./imageDictionaries/coffeeImages";
-import fetchMenuProducts, { displayProductsByCategory } from "./fetchMenuProducts";
+import fetchMenuProducts from "./fetchMenuProducts";
 import { router } from "./router";
 import { fetchFavorites } from "./services/favoritesService";
 import type { Products } from "./types/product";
-import { renderMenu } from "./pages/menuPage";
+import fetchDataForCart from "./fetchDataForCart";
 
 let favoriteProducts : Products = []
 
 let currentProduct = 0;
 let TOTAL_PRODUCTS = 0;
+
 
 function showLoader(show: boolean) {
   if (!show){
@@ -18,10 +19,12 @@ function showLoader(show: boolean) {
   }
 }
 
+
 export async function loadFavorites(): Promise<string> {
   showLoader(true)
   try {
-    favoriteProducts = await fetchFavorites();    
+    favoriteProducts = await fetchFavorites();
+    console.log(favoriteProducts)
     return favoriteProducts.products.map((p) =>`
     <div class="product-card fade">
         <img src="${coffeeImages[p.name]}" alt="product-img">
@@ -31,50 +34,64 @@ export async function loadFavorites(): Promise<string> {
       </div>
     `).join('');
   } catch (error) {
+    console.log(error);
     return `<p>Something went wrong while loading favorite products. Try refreshing the page.</p>`;
   } finally {
     showLoader(false)
   }
 }
 
-window.addEventListener("DOMContentLoaded", async() => {
+window.addEventListener("DOMContentLoaded", () => {
   router();
-  const coffeeCard = document.querySelector(".coffee-card");
-  const loaderExists = document.getElementById("loader");
-  if (coffeeCard) {
-      coffeeCard.innerHTML = await loadFavorites();
-  }
+  window.dispatchEvent(new CustomEvent("pageLoaded", { detail: { path: window.location.pathname } }));
+  const homeBtn = document.querySelector(".nav-list-home");
+  homeBtn?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent("pageLoaded", { detail: { path: window.location.pathname } }));
+  });
+});
 
+window.addEventListener("pageLoaded", async(e: Event) => {
+  const path = (e as CustomEvent).detail.path;
+  if (path === "/") {
+    const coffeeCard = document.querySelector(".coffee-card");
+    if (coffeeCard) {
+      coffeeCard.innerHTML = await loadFavorites();
+    }
+  }
   const productCards = Array.from(document.getElementsByClassName("product-card"));
-  console.log(productCards[0])
   TOTAL_PRODUCTS = productCards.length;
 
   if (TOTAL_PRODUCTS === 0) {
     return;
   }
+
   function showCurrentSlide(){
     productCards.forEach((el, i) => {
       el.style.display = (i === currentProduct) ? "block" : "none";
     });
   }
-
+  showCurrentSlide();
   const swipeLeft = document.querySelector(".swipe-left");
   const swipeRight = document.querySelector(".swipe-right");
 
   swipeLeft?.addEventListener("click", () => {
     currentProduct = (currentProduct === 0) ? TOTAL_PRODUCTS - 1 : currentProduct - 1;
-    console.log(currentProduct);
-    showCurrentSlide();
-    changeSlideIndicator()
-  });
-
-  swipeRight?.addEventListener("click", () => {
-    currentProduct = (currentProduct === TOTAL_PRODUCTS - 1) ? 0 : currentProduct + 1;
-    console.log(currentProduct);
-    
     showCurrentSlide();
     changeSlideIndicator();
   });
+
+  swipeRight?.addEventListener("click", () => {
+    currentProduct = (currentProduct === TOTAL_PRODUCTS - 1) ? 0 : currentProduct + 1;    
+    showCurrentSlide();
+    changeSlideIndicator();
+  });
+
+  if(path === '/menu') {
+    await fetchMenuProducts();
+  }
+  if(path === '/cart') {
+    fetchDataForCart();
+  }
 });
 
 window.addEventListener("popstate", () => {
