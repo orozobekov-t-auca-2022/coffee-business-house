@@ -20,19 +20,27 @@ export function renderRegistration():string{
                     </div>
                 </div>
                 <div class="register-input-wrapper secondRow">
-                     <div class="input-group">
+                    <div class="input-group">
                         <label for="city">City</label>
-                        <input type="text" id="city" placeholder="Placeholder" required>
+                        <select class="drop-down" id="city" required>
+                            <option value="" disabled selected>Select a city</option>
+                            <option value="Tokyo">Tokyo</option>
+                            <option value="Kioto">Kioto</option>
+                            <option value="Yokohama">Yokohama</option>
+                        </select>
                     </div>
+
 
                      <div class="input-group">
                         <label for="street">Street</label>
-                        <input type="text" id="street" placeholder="Placeholder" required>
+                        <select class="drop-down" id="street" required>
+
+                        </select>
                     </div>
 
-                     <div class="input-group">
+                    <div class="input-group">
                         <label for="house-number">House number</label>
-                        <input type="text" id="house-number" placeholder="Placeholder" required>
+                        <input type="number" min="2" id="house-number" placeholder="Placeholder" required>
                     </div>
 
                     <div class="paying-options">
@@ -47,7 +55,6 @@ export function renderRegistration():string{
                                 <label for="card">Card</label>
                             </div>
                         </div>
-                        
                     </div>
                 </div>
                 <button type="submit">Registration</button>

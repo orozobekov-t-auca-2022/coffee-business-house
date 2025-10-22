@@ -1,8 +1,6 @@
-import fetchDataForCart from "./fetchDataForCart";
 import { coffeeImages } from "./imageDictionaries/coffeeImages";
 import { dessertsImages } from "./imageDictionaries/dessertsImages";
 import { teaImages } from "./imageDictionaries/teaImages";
-import { renderCart } from "./pages/cartPage";
 import { renderMenu } from "./pages/menuPage";
 import { router } from "./router";
 import { Categories, type Product } from "./types/product";
@@ -242,7 +240,12 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                 'selectedAdditives': Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).map(btn => {
                     const additiveKey = btn.querySelector('.additInd').textContent;
                     return product.additives[additiveKey];
-                })
+                }),
+                'finalPrice': Number(product.sizes[selectedSize.toLowerCase()]['price']) +
+                              Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).reduce((sum, btn) => {
+                                  const additiveKey = btn.querySelector('.additInd').textContent;
+                                  return sum + Number(product.additives[additiveKey]['price']);
+                              }, 0)
             }
             // Add the selected item to the cart
             if(localStorage.getItem('cartItems')){

@@ -4,6 +4,7 @@ import { renderCart } from "./pages/cartPage";
 import { renderLogin } from "./pages/login";
 import { renderRegistration } from "./pages/registration";
 import fetchDataForCart from "./fetchDataForCart";
+import { registrationSender } from "./registrationSender";
 
 export function router() {
   const app = document.querySelector("#app") as HTMLElement;
@@ -33,6 +34,10 @@ export function router() {
 
   if(path === '/cart') {
     fetchDataForCart();
+  }
+
+  if(path === '/register'){
+    registrationSender()
   }
 
   document.querySelectorAll("[data-link]").forEach((link) => {

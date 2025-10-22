@@ -7,12 +7,12 @@ export function renderCart():string{
             </div>
             <div class="cart-total">
                 <span>Total:</span>
-                <span class="total-amount">$0.00</span>
+                <span class="cart-total-amount">$0.00</span>
             </div>
             <div class="cart-actions-wrapper">
                 <div class="cart-actions">
-                    <button>Sign In</button>
-                    <button>Registration</button>
+                    <button class="sign-in-button">Sign In</button>
+                    <button class="register-button">Registration</button>
                 </div>
             </div>
         </div>
