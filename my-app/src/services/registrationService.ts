@@ -1,6 +1,4 @@
-export function registrationSender():void{
-
-
+export function registrationService():void{
     const regForm = document.querySelector(".register-form") as HTMLFormElement;
 
     if (!regForm) {

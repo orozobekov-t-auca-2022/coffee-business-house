@@ -4,7 +4,10 @@ import { renderCart } from "./pages/cartPage";
 import { renderLogin } from "./pages/login";
 import { renderRegistration } from "./pages/registration";
 import fetchDataForCart from "./fetchDataForCart";
-import { registrationSender } from "./registrationSender";
+import { registrationService } from "./services/registrationService";
+import { loginService } from "./services/loginService";
+import { initMenuPage } from "./services/menuService";
+import { loadFavorites } from "./main";
 
 export function router() {
   const app = document.querySelector("#app") as HTMLElement;
@@ -32,12 +35,24 @@ export function router() {
 
   app.innerHTML = page();
 
+  if(path === '/') {
+    loadFavorites()
+  }
+
   if(path === '/cart') {
     fetchDataForCart();
   }
 
   if(path === '/register'){
-    registrationSender()
+    registrationService()
+  }
+
+  if(path === '/login'){
+    loginService()
+  }
+
+  if (path === "/menu") {
+    initMenuPage();
   }
 
   document.querySelectorAll("[data-link]").forEach((link) => {
@@ -52,3 +67,8 @@ export function router() {
   const event = new CustomEvent("pageLoaded", { detail: { path } });
   document.dispatchEvent(event);
 }
+
+// Обработка навигации стрелками браузера
+window.addEventListener("popstate", () => {
+  router();
+});

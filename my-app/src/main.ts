@@ -1,29 +1,19 @@
+import { showLoader } from "./components/showLoader";
 import { coffeeImages } from "./imageDictionaries/coffeeImages";
-import fetchMenuProducts from "./fetchMenuProducts";
 import { router } from "./router";
-import { fetchFavorites } from "./services/favoritesService";
+import { favoritesService } from "./services/favoritesService";
 import type { Products } from "./types/product";
-import fetchDataForCart from "./fetchDataForCart";
 
-let favoriteProducts : Products = []
+let favoriteProducts : Products = [];
 
 let currentProduct = 0;
 let TOTAL_PRODUCTS = 0;
 
-
-function showLoader(show: boolean) {
-  if (!show){
-    document.getElementById("loader")?.classList.add("hidden");
-  } else {
-    document.getElementById("loader")?.classList.remove("hidden");
-  }
-}
-
-
 export async function loadFavorites(): Promise<string> {
   showLoader(true)
+  await new Promise(resolve => setTimeout(resolve, 500));
   try {
-    favoriteProducts = await fetchFavorites();
+    favoriteProducts = await favoritesService();
     console.log(favoriteProducts)
     return favoriteProducts.products.map((p) =>`
     <div class="product-card fade">
@@ -35,7 +25,10 @@ export async function loadFavorites(): Promise<string> {
     `).join('');
   } catch (error) {
     console.log(error);
-    return `<p>Something went wrong while loading favorite products. Try refreshing the page.</p>`;
+    return `
+      <div class="fetch-failure-message">
+        <p>Something went wrong while loading favorite products. Try refreshing the page.</p>
+      </div>`;
   } finally {
     showLoader(false)
   }
@@ -85,13 +78,6 @@ window.addEventListener("pageLoaded", async(e: Event) => {
     showCurrentSlide();
     changeSlideIndicator();
   });
-
-  if(path === '/menu') {
-    await fetchMenuProducts();
-  }
-  if(path === '/cart') {
-    fetchDataForCart();
-  }
 });
 
 window.addEventListener("popstate", () => {

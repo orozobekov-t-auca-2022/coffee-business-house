@@ -188,7 +188,7 @@ h2{
     width: 480px;
     transition: all 0.5s ease;
     display: flex;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
 }
 .product-card{
@@ -382,6 +382,8 @@ h2{
     gap: 40px;
     justify-content: space-between;
     margin: 40px 0 100px 0;
+    position: relative;
+    
 }
 .menu-item{
     width: 310px;
@@ -896,21 +898,21 @@ footer{
     margin: 0 auto;
 }
 .loader {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #7b3f00;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #7b3f00;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
 
 .cart-page{
@@ -1040,14 +1042,40 @@ input[type=number]::-webkit-outer-spin-button {
 .error-message {
     color: #e74c3c;
     font-size: 0.8rem;
-    margin-top: 4px;
+    margin: 0 auto;
+}
+.error-credentials{
+    color: #e74c3c;
+    font-size: 1rem;
+    margin-top: 8px;
+    text-align: center;
 }
 
-
+.menu-items-not-loaded{
+    display: none;
+    color: #e74c3c;
+    font-size: 1rem;
+    margin-top: 8px;
+    text-align: center;
+}
 @keyframes spin {
     0% { transform: translate(-50%, -50%) rotate(0deg); }
     100% { transform: translate(-50%, -50%) rotate(360deg); }
 }
+
+.fetch-failure-message{
+    display: flex;
+    justify-content: center;
+        margin: 0 auto;
+
+    
+}
+.fetch-failure-message p{
+    color: #e74c3c;
+    font-size: 18px;
+    font-weight: 600;
+}
+
 
 @media screen and (min-width: 1441px) {
     body{

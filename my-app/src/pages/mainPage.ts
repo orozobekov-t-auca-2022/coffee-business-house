@@ -30,7 +30,7 @@ export function renderHome(): string{
             <div class="header-text">
                 <h1><span style="color: rgba(176, 144, 122, 1); font-style: italic;">Enjoy</span> premium coffee at our charming cafe</h1>
                 <p>With its inviting atmosphere and delicious coffee options, the Coffee House Resource is a popular destination for coffee lovers and those seeking a warm and inviting space to enjoy their favorite beverage.</p>
-                <button>
+                <button class="header-menu-button" data-link="/menu">
                     <span>
                         Menu
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

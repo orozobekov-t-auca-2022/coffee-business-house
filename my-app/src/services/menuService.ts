@@ -1,34 +1,24 @@
-import { coffeeImages } from "./imageDictionaries/coffeeImages";
-import { dessertsImages } from "./imageDictionaries/dessertsImages";
-import { teaImages } from "./imageDictionaries/teaImages";
-import { renderMenu } from "./pages/menuPage";
-import { router } from "./router";
-import { Categories, type Product } from "./types/product";
+import { showLoader } from "../components/showLoader";
+import { coffeeImages } from "../imageDictionaries/coffeeImages";
+import { dessertsImages } from "../imageDictionaries/dessertsImages";
+import { teaImages } from "../imageDictionaries/teaImages";
+import { router } from "../router";
+import { Categories, type Product } from "../types/product";
 
-const currentCategory: Categories = 'coffee';
+const currentCategory: Categories = Categories.Coffee;
 let products : Product[] = []
 const coffeeProducts: Product[] = []
 const teaProducts: Product[] = []
 const dessertProducts: Product[] = []
 
-export default async function fetchMenuProducts(): Promise<Product[]> {
-    try{
-        const response = await fetch(import.meta.env.VITE_COFFEE_API_KEY + '/products');
-        if(!response.ok) {
-            throw new Error('caught error')
-        }
-        const data = await response.json();
-        products = data['data'];
-        return products;
-    } catch (error) {
-        console.log(error)
-        const modalContainer = document.querySelector('.modal-container')
-        modalContainer!.innerHTML = `
-            <div>
-                <p>Something went wrong. Please, refresh the page</p>
-            </div>
-        ` 
+export default async function menuService(): Promise<Product[]> {
+    const response = await fetch(import.meta.env.VITE_COFFEE_API_KEY + '/products');
+    if(!response.ok) {
+        throw new Error('Failed to fetch products')
     }
+    const data = await response.json();
+    products = data['data'];
+    return products;
 }
 
 function sortProductsByCategories(): void {
@@ -48,18 +38,18 @@ export function displayProductsByCategory(category: Categories): void {
     let categoryProducts: Product[] = [];
     let productImages = {}
 
-    if(category === 'coffee') {
+    if(category === Categories.Coffee) {
         categoryProducts = coffeeProducts;
         productImages = coffeeImages;
-    } else if(category === 'tea') {
+    } else if(category === Categories.Tea) {
         categoryProducts = teaProducts;
         productImages = teaImages;
-    } else if(category === 'dessert') {
+    } else if(category === Categories.Dessert) {
         categoryProducts = dessertProducts;
         productImages = dessertsImages;
     }
     const menuItemsContainer = document.querySelector(".menu-items");
-    if (!menuItemsContainer) {
+    if (!menuItemsContainer) {        
         return;
     }
     menuItemsContainer!.innerHTML = categoryProducts.map(e => `
@@ -78,21 +68,36 @@ export function displayProductsByCategory(category: Categories): void {
         `).join('');
 }
 
-
-
-window.addEventListener("DOMContentLoaded", async() => {
-    await fetchMenuProducts();
-    sortProductsByCategories();
-    const menuBtn = document.querySelector(".nav-menu");
-    menuBtn?.addEventListener('click', (event) => {
-        event.preventDefault();
-        document.getElementsByClassName("content")[0].innerHTML = renderMenu();
+export async function initMenuPage() {
+    showLoader(true);
+    try {
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        if (products.length === 0) {
+            await menuService();
+            sortProductsByCategories();
+        }        
+        const currentProduct: Product[] = displayFilterButtons();
+        makeActiveButton("coffee-btn");
         displayProductsByCategory(Categories.Coffee);
-    })
-    if (window.location.pathname === "/menu") {
-        displayProductsByCategory(Categories.Tea);
+        attachModalListeners(currentProduct, Categories.Coffee);
+    } catch (error) {
+        console.error('Error initializing menu:', error);
+        const menuItemsContainer = document.querySelector('.menu-items') as HTMLElement;
+        if (menuItemsContainer) {
+            menuItemsContainer.innerHTML = `
+                <div class="fetch-failure-message">
+                    <p>Something went wrong while loading favorite products. Try refreshing the page.</p>
+                </div>`;
+        }
+    } finally {
+        showLoader(false);
     }
-    displayProductsByCategory(Categories.Dessert);
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+    clickOnMenu();
+})
+function displayFilterButtons() : Product[]{
     const coffeeBtn = document.getElementById('coffee-btn');
     const teaBtn = document.getElementById('tea-btn');
     const dessertBtn = document.getElementById('dessert-btn');
@@ -113,7 +118,7 @@ window.addEventListener("DOMContentLoaded", async() => {
         currentProduct = dessertProducts;
     });
 
-    let currentProduct = coffeeProducts;
+    let currentProduct = coffeeProducts
     if(currentCategory === 'coffee') {
         currentProduct = coffeeProducts;
     } else if (currentCategory === 'tea') {
@@ -121,8 +126,8 @@ window.addEventListener("DOMContentLoaded", async() => {
     } else if (currentCategory === 'dessert') {
         currentProduct = dessertProducts
     }
-    attachModalListeners(currentProduct, currentCategory)
-})
+    return currentProduct;
+}
 
 function filterProducts(category: Categories): void {
     const menuItemsContainer = document.querySelector(".menu-items");
@@ -147,7 +152,7 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
         const res = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/products/${currentProducts[i].id}`);
         const productData = await res.json();
         const product = productData.data;
-        let selectedItem = product;
+        const selectedItem = product;
 
         let selectedSize = null;
         console.log(product)
@@ -158,7 +163,7 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
 
         let sizes = '';
         let countInd = 0;
-        for(let key in product.sizes) {
+        for(const key in product.sizes) {
             if (countInd === 0) {
                 sizes += `
                     <button class="modal-text-option-btns active" data-index="${countInd}">
@@ -254,7 +259,7 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                 localStorage.setItem('cartItems', JSON.stringify([formData]));
             }
 
-            addToCart(formData);
+            addToCart();
             modalContainer.innerHTML = "";
         });
 
@@ -299,7 +304,6 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
 
 
         function updateTotalPrice() {
-            let basePrice = Number(selectedItem.price);
             let sizePrice = 0;
             let additivesPrice = 0;
 
@@ -314,7 +318,7 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
             });
 
             const total = sizePrice + additivesPrice;
-            document.querySelector('.modal-price-text').textContent = `$${total.toFixed(2)}`;
+            document.querySelector('.modal-price-text')!.textContent = `$${total.toFixed(2)}`;
         }
 
         const cartItems = document.querySelector('.cartDisplay') as HTMLElement;
@@ -356,9 +360,22 @@ function makeActiveButton(selectedButtonId: string): void {
 }
 
 
-function addToCart(item: Product): void {
+function addToCart(): void {
     const productsInCart = localStorage.getItem('cartItems');
     const cartItems = document.querySelector('.productsAmount') as HTMLElement;
     cartItems.innerHTML = '';
     cartItems.innerHTML = `${productsInCart ? JSON.parse(productsInCart).length : 0}`
 }
+
+function clickOnMenu(): void {
+    const menuBtn = document.querySelector(".nav-menu");
+    
+    menuBtn?.addEventListener('click', async (event) => {
+        event.preventDefault();
+        
+        history.pushState({}, "", '/menu');
+        router();
+    })
+}
+
+
