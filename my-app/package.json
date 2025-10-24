@@ -1,5 +1,6 @@
 {
   "name": "my-app",
+  "homepage": "https://rolling-scopes-school.github.io/orozobekov-t-auca-2022-JSFEQS2025Q3/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,6 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {

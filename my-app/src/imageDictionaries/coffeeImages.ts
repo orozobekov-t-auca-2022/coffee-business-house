@@ -1,7 +1,7 @@
 export const coffeeImages = {
-    'S’mores Frappuccino': './assests/coffee-slider-1.png',
-    'Caramel Macchiato': './assests/coffee-slider-2.png',
-    'Ice coffee': './assests/coffee-slider-3.png',
+    'S’mores Frappuccino': '../assests/coffee-slider-1.png',
+    'Caramel Macchiato': '../assests/coffee-slider-2.png',
+    'Ice coffee': '../assests/coffee-slider-3.png',
     'Irish coffee': '../assests/coffee-1.png',
     'Kahlua coffee': '../assests/coffee-2.png',
     'Honey raf': '../assests/coffee-3.png',
