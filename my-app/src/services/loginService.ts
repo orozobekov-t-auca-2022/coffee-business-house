@@ -1,3 +1,5 @@
+import { router } from "../router";
+
 export function loginService(): void{
     const loginForm = document.querySelector(".login-form") as HTMLFormElement;
 
@@ -42,8 +44,10 @@ export function loginService(): void{
         }).then(response => {
             console.log('Successful POST ', response);
             errorCredentials.style.display = 'none';
-            localStorage.setItem('token', response.token);
-            window.location.href = '/menu';
+            localStorage.setItem('token', response.data.access_token);
+            const base = import.meta.env.BASE_URL ?? '/';
+            history.pushState({}, "", `${base}menu`);
+            router();
         }).catch(error => {
             console.log(error)
         })
@@ -75,7 +79,7 @@ export function loginService(): void{
         if (!isValid) {
             input.classList.add('input-error');
             errorMsg.textContent = message;
-            } else {
+        } else {
             input.classList.remove('input-error');
             errorMsg.textContent = '';
             }

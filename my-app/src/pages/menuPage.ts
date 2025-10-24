@@ -22,11 +22,12 @@ export function renderMenu(): string{
                 </div>
             </div>
 
-            <div class="menu-items">
-                <div id="loader" class="loader hidden"></div>
-            </div>
             <div class="error-credentials">
             
+            </div>
+
+            <div class="menu-items">
+                <div id="loader" class="loader hidden"></div>
             </div>
 
             <div class="modal-container">

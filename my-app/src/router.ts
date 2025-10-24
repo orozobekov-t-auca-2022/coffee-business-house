@@ -29,11 +29,17 @@ export function router() {
   const cartDisplay = document.getElementsByClassName("cartDisplay").item(0) as HTMLElement;
 
   if(cartDisplay) {
-    if (page !== renderHome) {
+    if(page !== renderHome) {
+      if (localStorage.getItem('token') !== null) {
+      cartDisplay.style.visibility = "visible";
+    } else if (localStorage.getItem('token') === null && localStorage.getItem('cartItems') !== null && localStorage.getItem('cartItems').length > 0) {
       cartDisplay.style.visibility = "visible";
     } else {
       cartDisplay.style.visibility = "hidden";
     }
+  } else{
+    cartDisplay.style.visibility = "hidden";
+  }
   }
 
   app.innerHTML = page();

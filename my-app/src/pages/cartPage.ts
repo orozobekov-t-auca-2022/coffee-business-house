@@ -13,6 +13,7 @@ export function renderCart():string{
                 <div class="cart-actions">
                     <button class="sign-in-button">Sign In</button>
                     <button class="register-button">Registration</button>
+                    <button class="confirm-order-button">Confirm</button>
                 </div>
             </div>
         </div>

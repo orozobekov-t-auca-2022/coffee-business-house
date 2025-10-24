@@ -4,6 +4,16 @@ export default function fetchDataForCart() {
 
     const cartItemsList = productsInCart ? JSON.parse(productsInCart) : [];
 
+    if(localStorage.getItem('token') !== null) {
+        const signInButton = document.querySelector('.sign-in-button') as HTMLElement | null;
+        const registerButton = document.querySelector('.register-button') as HTMLElement | null;
+        signInButton.style.display = 'none';
+        registerButton.style.display = 'none';
+    } else {
+        const confirmButton = document.querySelector('.confirm-order-button') as HTMLElement | null;
+        confirmButton.style.display = 'none';
+    }
+
     if (!cartItems) {
         return;
     }
@@ -25,6 +35,25 @@ export default function fetchDataForCart() {
         const cartTotalPrice = document.querySelector('.cart-total-amount') as HTMLElement;
         cartTotalPrice.innerHTML = `$${cartItemsList.reduce((total: number, currentItem) => total + parseFloat(currentItem.finalPrice.toString()), 0).toFixed(2)}`;
 
+        let priceWithDiscount = 0;
+        if (item.selectedSize.discountPrice) {
+            priceWithDiscount = Number(item.selectedSize.discountPrice);
+        } else {
+            priceWithDiscount = Number(item.selectedSize.price);
+        }
+
+        for(let key = 0; key < item.selectedAdditives.length; key++) {
+            if (item.selectedAdditives[key].discountPrice) {
+                priceWithDiscount += Number(item.selectedAdditives[key].discountPrice);
+            } else {
+                priceWithDiscount += Number(item.selectedAdditives[key].price);
+            }
+        }
+
+        let htmlPrice = ''
+        if (priceWithDiscount > 0) {
+            htmlPrice = `<h3>${priceWithDiscount}</h3>`;
+        }
         return (`
             <div class="cart-item-wrapper">
                 <button class="cart-item-remove">
@@ -43,7 +72,8 @@ export default function fetchDataForCart() {
                     </div>
                 </div>
                 <div class="cart-item-price">
-                    <h3>$${parseFloat(item.finalPrice.toString()).toFixed(2)}</h3>
+                    <h3>$${htmlPrice}</h3>
+                    <h3 class="strikethrough">$${parseFloat(item.finalPrice.toString()).toFixed(2)}</h3>
                 </div>
             </div>
         `)}).join('');
@@ -77,4 +107,5 @@ export default function fetchDataForCart() {
                 window.dispatchEvent(new Event('popstate'));
             });
         }
+
 }
