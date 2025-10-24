@@ -4,7 +4,7 @@ import { router } from "./router";
 import { favoritesService } from "./services/favoritesService";
 import type { Products } from "./types/product";
 
-let favoriteProducts : Products = [];
+let favoriteProducts : Products = { products: [] };
 
 let currentProduct = 0;
 let TOTAL_PRODUCTS = 0;
@@ -60,7 +60,7 @@ window.addEventListener("pageLoaded", async(e: Event) => {
 
   function showCurrentSlide(){
     productCards.forEach((el, i) => {
-      el.style.display = (i === currentProduct) ? "block" : "none";
+      (el as HTMLElement).style.display = (i === currentProduct) ? "block" : "none";
     });
   }
   showCurrentSlide();
