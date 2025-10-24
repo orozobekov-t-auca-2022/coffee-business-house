@@ -4,7 +4,7 @@ export enum Categories {
     Dessert = "dessert"
 };
 
-export type Categories = (typeof Categories)[keyof typeof Categories]
+export type Category = (typeof Categories)[keyof typeof Categories]
 
 export interface Product {
     id: number;
@@ -12,7 +12,7 @@ export interface Product {
     description: string;
     price: number;
     discountPrice: number;
-    category: Categories
+    category: Category
 }
 
 export interface Products {

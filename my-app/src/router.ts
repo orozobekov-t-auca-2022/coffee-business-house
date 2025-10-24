@@ -23,7 +23,7 @@ export function router() {
   const path = window.location.pathname;
   const page = routes[path] || renderHome;
 
-  const cartDisplay = document.getElementsByClassName("cartDisplay").item(0);
+  const cartDisplay = document.getElementsByClassName("cartDisplay").item(0) as HTMLElement;
 
   if(cartDisplay) {
     if (page !== renderHome) {
