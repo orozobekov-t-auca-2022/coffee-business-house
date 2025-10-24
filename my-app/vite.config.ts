@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/coffee-house/',
+  base: '/orozobekov-t-auca-2022-JSFEQS2025Q3/',
   
   build: {
     outDir: 'dist',
