@@ -22,9 +22,11 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
+        working-directory: ./coffee-house
         run: npm install
 
       - name: Build project
+        working-directory: ./coffee-house
         run: npm run build
 
       - name: Deploy to GitHub Pages
