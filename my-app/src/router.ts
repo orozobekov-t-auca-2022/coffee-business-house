@@ -7,17 +7,20 @@ import fetchDataForCart from "./fetchDataForCart";
 import { registrationService } from "./services/registrationService";
 import { loginService } from "./services/loginService";
 import { initMenuPage } from "./services/menuService";
-import { loadFavorites } from "./main";
 
 export function router() {
   const app = document.querySelector("#app") as HTMLElement;
 
+  const base = import.meta.env.BASE_URL;
+
+  console.log('Base URL:', base);
+
   const routes: Record<string, () => string> = {
-    "/": renderHome,
-    "/menu": renderMenu,
-    "/cart": renderCart,
-    "/login": renderLogin,
-    "/register": renderRegistration
+    [`${base}`]: renderHome,
+    [`${base}menu`]: renderMenu,
+    [`${base}cart`]: renderCart,
+    [`${base}login`]: renderLogin,
+    [`${base}register`]: renderRegistration
   };
 
   const path = window.location.pathname;
@@ -35,40 +38,49 @@ export function router() {
 
   app.innerHTML = page();
 
-  if(path === '/') {
-    loadFavorites()
-  }
-
-  if(path === '/cart') {
+  if (path === `${base}cart` || path === '/cart') {
     fetchDataForCart();
   }
 
-  if(path === '/register'){
-    registrationService()
+  if (path === `${base}register` || path === '/register'){
+    registrationService();
   }
 
-  if(path === '/login'){
-    loginService()
+  if (path === `${base}login` || path === '/login'){
+    loginService();
   }
 
-  if (path === "/menu") {
+  if (path === `${base}menu` || path === '/menu') {
     initMenuPage();
   }
 
   document.querySelectorAll("[data-link]").forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      const target = e.currentTarget as HTMLAnchorElement;
-      history.pushState({}, "", target.href);
+      const el = e.currentTarget as HTMLElement;
+      let href = (el.getAttribute && el.getAttribute('href')) || el.getAttribute('data-link') || '';
+      try {
+        const url = new URL(href, window.location.origin);
+        href = url.pathname;
+      } catch (error) {
+        console.log(error)
+      }
+      if (href.startsWith('/')) {
+        href = `${base}${href.replace(/^\//, '')}`;
+      } else if (!href.startsWith(base)) {
+        href = `${base}${href}`;
+      }
+
+      history.pushState({}, "", href);
       router();
     });
   });
 
   const event = new CustomEvent("pageLoaded", { detail: { path } });
+  console.log('[router] dispatching pageLoaded', path);
   document.dispatchEvent(event);
 }
 
-// Обработка навигации стрелками браузера
 window.addEventListener("popstate", () => {
   router();
 });

@@ -1,18 +1,29 @@
 export default function fetchDataForCart() {
     const productsInCart = localStorage.getItem('cartItems');
-    const cartItems = document.querySelector('.products-list') as HTMLElement;
+    const cartItems = document.querySelector('.products-list') as HTMLElement | null;
 
     const cartItemsList = productsInCart ? JSON.parse(productsInCart) : [];
 
-    cartItems.innerHTML = cartItemsList!.map(item => {
+    if (!cartItems) {
+        return;
+    }
+
+    if (!cartItemsList || cartItemsList.length === 0) {
+        cartItems.innerHTML = `<div class="empty-cart">Your cart is empty</div>`;
+        const cartTotalPrice = document.querySelector('.cart-total-amount') as HTMLElement | null;
+        if (cartTotalPrice) cartTotalPrice.innerHTML = '$0.00';
+        return;
+    }
+
+    cartItems.innerHTML = cartItemsList!.map((item) => {
         let finalSizes = item.selectedSize['size']
 
-        item.selectedAdditives.map((additive) => {
+    item.selectedAdditives.forEach((additive) => {
             finalSizes += `, ${additive.name}`;
         })
 
         const cartTotalPrice = document.querySelector('.cart-total-amount') as HTMLElement;
-        cartTotalPrice.innerHTML = `$${cartItemsList.reduce((total: number, currentItem: any) => total + parseFloat(currentItem.finalPrice.toString()), 0).toFixed(2)}`;
+        cartTotalPrice.innerHTML = `$${cartItemsList.reduce((total: number, currentItem) => total + parseFloat(currentItem.finalPrice.toString()), 0).toFixed(2)}`;
 
         return (`
             <div class="cart-item-wrapper">
@@ -41,22 +52,29 @@ export default function fetchDataForCart() {
         const removeButtons = document.querySelectorAll('.cart-item-remove');
         removeButtons.forEach((button, index) => {
             button.addEventListener('click', () => {
-                console.log('Remove button clicked for item index:', index);
                 cartItemsList.splice(index, 1);
                 localStorage.setItem('cartItems', JSON.stringify(cartItemsList));
                 fetchDataForCart();
             });
         });
 
-        const signInButton = document.querySelector('.sign-in-button') as HTMLElement;
-        signInButton.addEventListener('click', () => {
-            history.pushState({}, '', '/login');
-            window.dispatchEvent(new Event('popstate'));
-        })
+        const base = import.meta.env.BASE_URL ?? '/';
 
-        const registerButton = document.querySelector('.register-button') as HTMLElement;
-        registerButton.addEventListener('click', () => {
-            history.pushState({}, '', '/register');
-            window.dispatchEvent(new Event('popstate'));
-        })
+        const signInButton = document.querySelector('.sign-in-button') as HTMLElement | null;
+        if (signInButton) {
+            signInButton.addEventListener('click', () => {
+                const href = `${base}login`;
+                history.pushState({}, '', href);
+                window.dispatchEvent(new Event('popstate'));
+            });
+        }
+
+        const registerButton = document.querySelector('.register-button') as HTMLElement | null;
+        if (registerButton) {
+            registerButton.addEventListener('click', () => {
+                const href = `${base}register`;
+                history.pushState({}, '', href);
+                window.dispatchEvent(new Event('popstate'));
+            });
+        }
 }

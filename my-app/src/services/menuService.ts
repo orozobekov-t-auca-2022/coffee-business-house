@@ -61,7 +61,9 @@ export function displayProductsByCategory(category: Categories): void {
                 <div class="menu-item-title">
                     <h3>${e.name}</h3>
                     <p>${e.description}</p>
-                    <h3>${e.price}</h3>
+                </div>
+                <div class="menu-item-price">
+                    <h3>$${e.price}</h3>
                 </div>
             </div>
         </div>
@@ -70,6 +72,9 @@ export function displayProductsByCategory(category: Categories): void {
 
 export async function initMenuPage() {
     showLoader(true);
+    const productItems = document.querySelector('.productsAmount') as HTMLElement;
+    const cartItemsCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')).length : 0;
+    productItems.innerHTML = cartItemsCount.toString();
     try {
         await new Promise(resolve => setTimeout(resolve, 3000));
         if (products.length === 0) {
@@ -93,10 +98,6 @@ export async function initMenuPage() {
         showLoader(false);
     }
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-    clickOnMenu();
-})
 function displayFilterButtons() : Product[]{
     const coffeeBtn = document.getElementById('coffee-btn');
     const teaBtn = document.getElementById('tea-btn');
@@ -286,9 +287,6 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
             });
         });
 
-
-    
-
         const additiveButtons = document.querySelectorAll('.additives .modal-text-option-btns');
 
         additiveButtons.forEach(button => {
@@ -324,10 +322,10 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
         const cartItems = document.querySelector('.cartDisplay') as HTMLElement;
         cartItems.addEventListener('click', (e) => {
             e.preventDefault();
-            history.pushState({}, "", '/cart');
+            history.pushState({}, "", `${import.meta.env.BASE_URL}cart`);
             router();
         });
-      } catch (err) {
+        } catch (err) {
         console.log(err);
         modalContainer.innerHTML = `
             <div>
@@ -366,16 +364,3 @@ function addToCart(): void {
     cartItems.innerHTML = '';
     cartItems.innerHTML = `${productsInCart ? JSON.parse(productsInCart).length : 0}`
 }
-
-function clickOnMenu(): void {
-    const menuBtn = document.querySelector(".nav-menu");
-    
-    menuBtn?.addEventListener('click', async (event) => {
-        event.preventDefault();
-        
-        history.pushState({}, "", '/menu');
-        router();
-    })
-}
-
-
