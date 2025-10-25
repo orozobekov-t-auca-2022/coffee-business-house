@@ -55,7 +55,7 @@ export function displayProductsByCategory(category: Categories): void {
     }
     menuItemsContainer!.innerHTML = categoryProducts.map(e => {
         let actualPrice: string = ``;
-        if (localStorage.getItem('token') !== null) {
+        if (localStorage.getItem('token') !== null && e.discountPrice !== null) {
             actualPrice = `<h3 class="discount-price">$${e.discountPrice}</h3>` + `<h3 class="struck-through-price">$${e.price}</h3>`; 
         } else{
             actualPrice = `<h3>$${e.price}</h3>`
@@ -345,7 +345,9 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                     'image': currentCategory === "coffee" ? coffeeImages[currentProducts[i].name] :
                           currentCategory === "tea" ? teaImages[currentProducts[i].name] :
                           dessertsImages[currentProducts[i].name],
-                    'selectedSize': product.sizes[selectedSize.toLowerCase()],
+                    'selectedSize': {
+                        [selectedSize]: product.sizes[selectedSize.toLowerCase()]
+                        },
                     'selectedAdditives': Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).map(btn => {
                                         const additiveKey = btn.querySelector('.additInd').textContent;
                                         return product.additives[additiveKey];

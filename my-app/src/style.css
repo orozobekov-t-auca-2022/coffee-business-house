@@ -943,11 +943,8 @@ footer{
 .cart-total{
     display: flex;
     justify-content: space-between;
-    margin: 40px 0;
 }
 .cart-total span{
-    max-width: 646px;
-    width: 100%;
     font-size: 24px;
     color: rgba(64, 63, 61, 1);
     font-weight: 600;
@@ -985,6 +982,7 @@ footer{
     align-items: center;
     justify-content: space-between;
     height: 100px;
+    gap: 20px;
 }
 .cart-item-image img{
     height: 100px;
@@ -1006,11 +1004,19 @@ footer{
     font-size: 16px;
     line-height: 150%;
 }
+.cart-item-price{
+    display: flex;
+    gap: 20px;
+}
 .cart-item-price h3{
     font-weight: 600;
     font-size: 24px;
     line-height: 125%;
     color: rgba(64, 63, 61, 1)
+}
+.cart-item-price .strikethrough{
+    text-decoration: line-through;
+    opacity: 50%;
 }
 .products-list{
     display: flex;
@@ -1157,7 +1163,41 @@ input[type=number]::-webkit-outer-spin-button {
     color: #222;
     font-weight: 600;
 }
-
+.add-info{
+    display: flex;
+    justify-content: space-between;
+    height: 30px;
+}
+.add-info span{
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 125%;
+    color: rgba(64, 63, 61, 1);
+}
+.add-info-first{
+    max-width: 1135px;
+    width: 100%;
+}
+.add-info-first, .price-info-first{
+    max-width: 1138px;
+    width: 100%;
+}
+.additional-information{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 40px 0;
+    padding-left: 48px;
+}
+.first-total-amount{
+    display: none;
+    text-decoration: line-through;
+    opacity: 50%;
+    min-width: 69px !important;
+}
+.cart-total-amount{
+    min-width: 69px !important;
+}
 @media screen and (min-width: 1441px) {
     body{
         margin: 20px auto;

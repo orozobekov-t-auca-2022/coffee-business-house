@@ -5,9 +5,12 @@ export function renderCart():string{
             <div class="products-list">
 
             </div>
-            <div class="cart-total">
-                <span>Total:</span>
-                <span class="cart-total-amount">$0.00</span>
+            <div class="additional-information">
+                <div class="cart-total">
+                    <span class="price-info-first">Total:</span>
+                    <span class="first-total-amount">$0.00</span>
+                    <span class="cart-total-amount">$0.00</span>
+                </div>
             </div>
             <div class="cart-actions-wrapper">
                 <div class="cart-actions">
