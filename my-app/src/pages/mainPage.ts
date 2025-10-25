@@ -1,5 +1,12 @@
 const base = import.meta.env.BASE_URL ?? '/';
 
+import firstAboutImage from '../../assests/about-1.png'
+import secondAboutImage from '../../assests/about-2.png'
+import thirdAboutImage from '../../assests/about-3.png'
+import fourthAboutImage from '../../assests/about-4.png'
+import mobileSceensImage from '../../assests/mobile-screens.png'
+import mainVideo from '../../assests/video.mp4'
+
 export function renderHome(): string{
     return `
     <div class="sidebar-wrapper">
@@ -27,7 +34,7 @@ export function renderHome(): string{
     </div>
     <div class="header-main">
             <video autoplay muted loop playsinline preload="auto">
-                <source src="${base}assests/video.mp4" type="video/mp4">
+                <source src="${mainVideo}" type="video/mp4">
             </video>
             <div class="header-text">
                 <h1><span style="color: rgba(176, 144, 122, 1); font-style: italic;">Enjoy</span> premium coffee at our charming cafe</h1>
@@ -94,10 +101,10 @@ export function renderHome(): string{
         <section id="about">
             <h2>Resource is <span style="color: rgba(176, 144, 122, 1); font-style: italic;">the perfect and cozy place</span> where you can enjoy a variety of hot beverages, relax, catch up with friends, or get some work done.</h2>
             <div class="about-images">
-                <img class="firstImg" src="${base}assests/about-1.png" alt="first about image">
-                <img class="secondImg" src="${base}assests/about-3.png" alt="second about image">
-                <img class="fourthImg" src="${base}assests/about-4.png" alt="fourth about image">
-                <img class="thirdImg" src="${base}assests/about-2.png" alt="third about image">
+                <img class="firstImg" src="${firstAboutImage}" alt="first about image">
+                <img class="secondImg" src="${thirdAboutImage}" alt="second about image">
+                <img class="fourthImg" src="${fourthAboutImage}" alt="fourth about image">
+                <img class="thirdImg" src="${secondAboutImage}" alt="third about image">
             </div>
         </section>
         <section id="mobile-app">
@@ -140,7 +147,7 @@ export function renderHome(): string{
                 </div>
             </div>
             <div class="mobile-app-image">
-                <img src="${base}assests/mobile-screens.png" alt="mobile-screens">
+                <img src="${mobileSceensImage}" alt="mobile-screens">
             </div>
         </section>
     </main>
