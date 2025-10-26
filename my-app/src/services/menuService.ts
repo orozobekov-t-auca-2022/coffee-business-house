@@ -383,11 +383,11 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                     modalContainer.innerHTML = ''
                 }
             });
-            const sizeButtons = document.querySelectorAll('.sizes .modal-text-option-btns');
+            const sizeButtons = document.querySelectorAll('.sizes .modal-text-option-btns') as NodeListOf<HTMLElement>;
 
-            sizeButtons!.forEach(button => {
+            sizeButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    sizeButtons!.forEach(childBtn => childBtn.classList.remove('active'));
+                    sizeButtons.forEach(childBtn => childBtn.classList.remove('active'));
                     button.classList.add('active');
                     const dataSize = button.dataset.size;
                     if (dataSize) {
