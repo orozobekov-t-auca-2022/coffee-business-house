@@ -255,7 +255,6 @@ h2{
     align-items: center;
     flex-wrap: wrap;
     margin: 100px 0;
-    height: 630px;
 }
 .mobile-app-text{
     width: 100%;
@@ -943,6 +942,7 @@ footer{
 .cart-total{
     display: flex;
     justify-content: space-between;
+    gap: 20px;
 }
 .cart-total span{
     font-size: 24px;
@@ -1088,6 +1088,22 @@ input[type=number]::-webkit-outer-spin-button {
     text-align: center;
 }
 
+.thanks-notification{
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff3f2;
+    color: #237b9e;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.12);
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 260px;
+}
 .top-notification {
     position: fixed;
     top: 18px;
@@ -1105,7 +1121,7 @@ input[type=number]::-webkit-outer-spin-button {
     min-width: 260px;
 }
 .top-notification.error { border-left: 4px solid #d9534f; }
-.top-notification .top-notification-close {
+.top-notification .top-notification-close{
     background: transparent;
     border: none;
     font-size: 18px;
@@ -1193,10 +1209,27 @@ input[type=number]::-webkit-outer-spin-button {
     display: none;
     text-decoration: line-through;
     opacity: 50%;
-    min-width: 69px !important;
 }
-.cart-total-amount{
-    min-width: 69px !important;
+
+.disabled{
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: not-allowed !important;
+}
+.error-cred-message {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.error-cred-message p{
+    color: #e74c3c;
+    font-size: 18px;
+    font-weight: 600;
+}
+.profile-block{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 @media screen and (min-width: 1441px) {
     body{
@@ -1307,7 +1340,7 @@ input[type=number]::-webkit-outer-spin-button {
         margin: 100px 0;
         flex-wrap: wrap;
         justify-content: center;
-        height: auto;
+        height: 1072px !important;
     }
     .mobile-app-image{
         width: 100%;

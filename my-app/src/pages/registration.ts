@@ -58,6 +58,7 @@ export function renderRegistration():string{
                     </div>
                 </div>
                 <button type="submit">Registration</button>
+                <div class="error-cred-message"></div>
             </form>
         </div>
     `

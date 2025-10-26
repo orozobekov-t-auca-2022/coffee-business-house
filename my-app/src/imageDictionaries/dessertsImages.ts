@@ -1,5 +1,3 @@
-const base = import.meta.env.BASE_URL ?? '/';
-
 import firstDessert from '../../assests/dessert-1.png'
 import secondDessert from '../../assests/dessert-2.png'
 import thirdDessert from '../../assests/dessert-3.png'
@@ -15,7 +13,7 @@ import twelvethDessert from '../../assests/lemon-mousse.png'
 import thirteenthDessert from '../../assests/fruit-tart.png'
 import fourteenthDessert from '../../assests/apple-pie.png'
 
-export const dessertsImages = {
+export const dessertsImages: Record<string, string> = {
     'Marble cheesecake': firstDessert,
     'Red velvet': secondDessert,
     'Cheesecakes': thirdDessert,

@@ -5,7 +5,8 @@ export async function favoritesService(): Promise<Products> {
     try {
         const res = await fetch(url);
         const json = await res.json();
-        return { products: json.data };
+        const products = json.data ?? json;
+        return { products: products };
     } catch (err) {
         console.error('[favoritesService] fetch error', err);
         throw err;

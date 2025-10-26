@@ -3,7 +3,7 @@ import { renderMenu } from "./pages/menuPage";
 import { renderCart } from "./pages/cartPage";
 import { renderLogin } from "./pages/login";
 import { renderRegistration } from "./pages/registration";
-import fetchDataForCart from "./fetchDataForCart";
+import fetchDataForCart from "./services/fetchDataForCart";
 import { registrationService } from "./services/registrationService";
 import { loginService } from "./services/loginService";
 import { initMenuPage } from "./services/menuService";
@@ -12,8 +12,6 @@ export function router() {
   const app = document.querySelector("#app") as HTMLElement;
 
   const base = import.meta.env.BASE_URL;
-
-  console.log('Base URL:', base);
 
   const routes: Record<string, () => string> = {
     [`${base}`]: renderHome,
@@ -32,7 +30,7 @@ export function router() {
     if(page !== renderHome) {
       if (localStorage.getItem('token') !== null) {
       cartDisplay.style.visibility = "visible";
-    } else if (localStorage.getItem('token') === null && localStorage.getItem('cartItems') !== null && localStorage.getItem('cartItems').length > 0) {
+    } else if (localStorage.getItem('token') === null && localStorage.getItem('cartItems') !== null && localStorage.getItem('cartItems')!.length > 0) {
       cartDisplay.style.visibility = "visible";
     } else {
       cartDisplay.style.visibility = "hidden";
@@ -60,17 +58,18 @@ export function router() {
     initMenuPage();
   }
 
-  document.querySelectorAll("[data-link]").forEach((link) => {
-    link.addEventListener("click", (e) => {
+  const win = window as Window & { __spaDataLinkHandlerAttached?: boolean };
+  if (!win.__spaDataLinkHandlerAttached) {
+    document.addEventListener('click', (e) => {
+      const target = (e.target as HTMLElement).closest('[data-link]') as HTMLElement | null;
+      if (!target) return;
       e.preventDefault();
-      const el = e.currentTarget as HTMLElement;
-      let href = (el.getAttribute && el.getAttribute('href')) || el.getAttribute('data-link') || '';
+      let href = (target.getAttribute && target.getAttribute('href')) || target.getAttribute('data-link') || '';
       try {
         const url = new URL(href, window.location.origin);
         href = url.pathname;
       } catch (error) {
-        console.log(error)
-      }
+        console.error('Invalid URL:', href);}
       if (href.startsWith('/')) {
         href = `${base}${href.replace(/^\//, '')}`;
       } else if (!href.startsWith(base)) {
@@ -80,11 +79,12 @@ export function router() {
       history.pushState({}, "", href);
       router();
     });
-  });
+    win.__spaDataLinkHandlerAttached = true;
+  }
 
   const event = new CustomEvent("pageLoaded", { detail: { path } });
   console.log('[router] dispatching pageLoaded', path);
-  document.dispatchEvent(event);
+  window.dispatchEvent(event as Event);
 }
 
 window.addEventListener("popstate", () => {

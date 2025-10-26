@@ -1,5 +1,3 @@
-const base = import.meta.env.BASE_URL ?? '/';
-
 import firstAboutImage from '../../assests/about-1.png'
 import secondAboutImage from '../../assests/about-2.png'
 import thirdAboutImage from '../../assests/about-3.png'
@@ -66,7 +64,6 @@ export function renderHome(): string{
                 </div>
 
                 <div class="coffee-card">
-                    <div id="loader" class="loader hidden"></div>
                 </div>
 
                 <div class="swipe-right">

@@ -23,7 +23,6 @@ export default async function menuService(): Promise<Product[]> {
 }
 
 function sortProductsByCategories(): void {
-    console.log("sorting products by categories")
     for(const el in products) {
         if(products[el].category === 'coffee') {
             coffeeProducts.push(products[el])
@@ -37,7 +36,7 @@ function sortProductsByCategories(): void {
 
 export function displayProductsByCategory(category: Categories): void {
     let categoryProducts: Product[] = [];
-    let productImages = {}
+    let productImages: Record<string, string> = {};
 
     if(category === Categories.Coffee) {
         categoryProducts = coffeeProducts;
@@ -80,9 +79,14 @@ export function displayProductsByCategory(category: Categories): void {
 }
 
 export async function initMenuPage() {
-    showLoader(true);
+    const productsAmount = document.querySelector(".productsAmount") as HTMLElement;
+    if(localStorage.getItem('token') !== null) {
+        productsAmount.style.visibility = "visible"
+    }
+
+    showLoader(true, ".menu-items");
     const productItems = document.querySelector('.productsAmount') as HTMLElement;
-    const cartItemsCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')).length : 0;
+    const cartItemsCount = localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')!).length : 0;
     productItems.innerHTML = cartItemsCount.toString();
     try {
         await new Promise(resolve => setTimeout(resolve, 3000));
@@ -219,7 +223,6 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
 
             let additives = '';
             for(const key in product.additives) {
-                console.log(key)
                 additives += `
                     <button class="modal-text-option-btns" data-additive="${product.additives[key].name}">
                         <span class="additInd">${key}</span>
@@ -349,12 +352,12 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                         [selectedSize]: product.sizes[selectedSize.toLowerCase()]
                         },
                     'selectedAdditives': Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).map(btn => {
-                                        const additiveKey = btn.querySelector('.additInd').textContent;
+                                        const additiveKey = btn.querySelector('.additInd')!.textContent;
                                         return product.additives[additiveKey];
                                         }),
                     'finalPrice': Number(product.sizes[selectedSize.toLowerCase()]['price']) +
                                 Array.from(document.querySelectorAll('.additives .modal-text-option-btns.active')).reduce((sum, btn) => {
-                                    const additiveKey = btn.querySelector('.additInd').textContent;
+                                    const additiveKey = btn.querySelector('.additInd')!.textContent;
                                     return sum + Number(product.additives[additiveKey]['price']);
                                 }, 0)
                 }
@@ -386,7 +389,13 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                 button.addEventListener('click', () => {
                     sizeButtons!.forEach(childBtn => childBtn.classList.remove('active'));
                     button.classList.add('active');
-                    selectedSize = button.querySelector('.size')?.textContent;
+                    const dataSize = button.dataset.size;
+                    if (dataSize) {
+                        selectedSize = dataSize;
+                    } else {
+                        const sizeInside = button.querySelector('.size')?.textContent?.trim();
+                        if (sizeInside) selectedSize = sizeInside.toLowerCase();
+                    }
                     updateTotalPrice();
                 });
             });
@@ -415,7 +424,7 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
                 }
 
                 document.querySelectorAll('.additives .modal-text-option-btns.active').forEach(btn => {
-                    const additiveKey = btn.querySelector('.additInd').textContent;
+                    const additiveKey = btn.querySelector('.additInd')!.textContent;
                     if(localStorage.getItem('token') !== null && product['additives'][additiveKey]['discountPrice'] !== undefined) {
                         additivesPrice += Number(product['additives'][additiveKey]['discountPrice']);
                     } else {
@@ -461,7 +470,14 @@ function makeActiveButton(selectedButtonId: string): void {
 
 function addToCart(): void {
     const productsInCart = localStorage.getItem('cartItems');
-    const cartItems = document.querySelector('.productsAmount') as HTMLElement;
-    cartItems.innerHTML = '';
-    cartItems.innerHTML = `${productsInCart ? JSON.parse(productsInCart).length : 0}`
+    if(localStorage.getItem('token') === null) {
+        const cartDisplay = document.getElementsByClassName("cartDisplay").item(0) as HTMLElement;
+        cartDisplay.style.visibility = 'visible';
+        const cartItems = document.querySelector('.productsAmount') as HTMLElement;
+        cartItems.style.visibility = 'hidden';
+    } else {
+        const cartItems = document.querySelector('.productsAmount') as HTMLElement;
+        cartItems.innerHTML = '';
+        cartItems.innerHTML = `${productsInCart ? JSON.parse(productsInCart).length : 0}`;
+    }
 }

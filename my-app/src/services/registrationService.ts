@@ -1,9 +1,58 @@
+import { showSuccess } from "../components/showSuccess";
+
 export function registrationService():void{
     const regForm = document.querySelector(".register-form") as HTMLFormElement;
 
     if (!regForm) {
         return;
     }
+
+    const registerButton = regForm.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    if (registerButton) {
+        registerButton.disabled = true;
+        registerButton.classList.add('disabled');
+    }
+
+    function isFormValidRealtime(): boolean {
+        const login = (document.getElementById('login') as HTMLInputElement).value;
+        const password = (document.getElementById('password') as HTMLInputElement).value;
+        const confirmPassword = (document.getElementById('confirm-password') as HTMLInputElement).value;
+        const city = (document.getElementById('city') as HTMLInputElement).value;
+        const street = (document.getElementById('street') as HTMLInputElement).value;
+        const houseNumber = (document.getElementById('house-number') as HTMLInputElement).value;
+        const paymentOptions = document.getElementsByName('payment') as NodeListOf<HTMLInputElement>;
+
+        const loginRegex = /^[A-Za-z][A-Za-z]{2,}$/;
+        if(!loginRegex.test(login)) return false;
+
+        const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
+        if (!passwordRegex.test(password)) return false;
+        if (password !== confirmPassword) return false;
+
+        if (isNaN(Number(houseNumber)) || Number(houseNumber) <= 1) return false;
+        if (!city || city.trim() === '') return false;
+        if (!street || street.trim() === '') return false;
+        if (!Array.from(paymentOptions).some(opt => opt.checked)) return false;
+
+        return true;
+    }
+
+    regForm.addEventListener('input', () => {
+        if (registerButton) {
+            const valid = isFormValidRealtime();
+            registerButton.disabled = !valid;
+            registerButton.classList.toggle('disabled', !valid);
+        }
+        const credError = document.querySelector('.error-cred-message') as HTMLElement | null;
+        if (credError) credError.textContent = '';
+    });
+    regForm.addEventListener('change', () => {
+        if (registerButton) {
+            const valid = isFormValidRealtime();
+            registerButton.disabled = !valid;
+            registerButton.classList.toggle('disabled', !valid);
+        }
+    });
 
     regForm.addEventListener('submit', async (event) => {
         event.preventDefault();
@@ -16,46 +65,13 @@ export function registrationService():void{
         const paymentOptions = document.getElementsByName('payment') as NodeListOf<HTMLInputElement>;
         let selectedPaymentOption = '';
 
-
-        function isFormValid(): boolean {
-            for(const option of paymentOptions) {
-                if(option.checked) {
-                    selectedPaymentOption = option.value;
-                    break;
-                }
+        if (!isFormValidRealtime()) return;
+        for(const option of paymentOptions) {
+            if(option.checked) {
+                selectedPaymentOption = option.value;
+                break;
             }
-
-            const loginRegex = /^[A-Za-z][A-Za-z]{2,}$/;
-            if(!loginRegex.test(login)){
-                alert('Login must start with a letter and contain only letters and numbers');
-                return false
-            }
-
-            const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{6,}$/;
-            if (!passwordRegex.test(password)) {
-                alert("Password must be at least 6 characters long and contain at least one special character");
-                return false;
-            } else if (password !== confirmPassword) {
-                alert("Passwords do not match");
-                return false;
-            }
-
-        
-            if (isNaN(Number(houseNumber)) || Number(houseNumber) <= 1) {
-                alert("House number must be greater than 1");
-                return false;
-            }
-
-            const selectedPayment = document.querySelector('input[name="payment"]:checked');
-            if (!selectedPayment) {
-                return false;
-            }
-
-            return true;
         }
-
-        const registerButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
-        if (!isFormValid()) return;
 
         const formData = {
             login,
@@ -68,7 +84,7 @@ export function registrationService():void{
         }
 
 
-        const sender = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/register`, {
+        await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/register`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -80,12 +96,31 @@ export function registrationService():void{
             if (!response.ok) {
                 throw new Error(`Error with status: ${response.status}`);   
             }
-            
+            const errorMsg = document.querySelector('.error-message');
+            errorMsg?.remove();
             return response.json();
         }).then(response => {
             console.log('Successful POST ', response);
+            showSuccess("Registration successful! You can now log in.");
+            const credError = document.querySelector('.error-cred-message') as HTMLElement | null;
+            if(credError) credError.textContent = '';
         }).catch(error => {
-            console.log(error)
+            const msg = 'Something wrong happened during registration. The user with the same credentials already exists.'
+            const existing = document.querySelector('.error-cred-message') as HTMLElement | null;
+            if (existing) {
+                existing.innerHTML = `<p>${msg}</p>`;
+            } else {
+                const errDiv = document.createElement('div');
+                errDiv.className = 'error-cred-message';
+                errDiv.innerHTML = `<p>${msg}</p>`;
+                regForm.prepend(errDiv);
+            }
+            
+            if (registerButton) {
+                registerButton.disabled = false;
+                registerButton.classList.remove('disabled');
+            }
+            console.log(error);
         })
     })
 
@@ -111,7 +146,7 @@ export function registrationService():void{
         });
 
     const inputsToValidate = [
-        { id: 'login', message: '⚠ Login must start with a letter and contain only letters and numbers' },
+        { id: 'login', message: '⚠ Login must start with a letter, contain only English letters and be at least 3 characters long' },
         { id: 'password', message: '⚠ Password must be at least 6 characters long and contain at least one special character' },
         { id: 'confirm-password', message: '⚠ Passwords do not match' },
         { id: 'city', message: '⚠ Please select a city' },

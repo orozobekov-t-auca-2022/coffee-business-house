@@ -3,6 +3,7 @@ import { coffeeImages } from "./imageDictionaries/coffeeImages";
 import { router } from "./router";
 import { favoritesService } from "./services/favoritesService";
 import type { Products } from "./types/product";
+import './style.css'
 
 let favoriteProducts : Products = { products: [] };
 let favoriteHTML: string | null = null;
@@ -11,12 +12,12 @@ let favoritesLoaded = false;
 let currentProduct = 0;
 let TOTAL_PRODUCTS = 0;
 
-export async function loadFavorites(): Promise<string> {
-  if (favoritesLoaded && favoriteHTML !== null) {
+export async function loadFavorites(force = false): Promise<string> {
+  if (!force && favoritesLoaded && favoriteHTML !== null) {
     return favoriteHTML;
   }
   try {
-    showLoader(true);
+    showLoader(true, '.coffee-cards');
     favoriteProducts = await favoritesService();
     favoriteHTML = favoriteProducts.products.map((p) =>`
     <div class="product-card fade">
@@ -35,7 +36,7 @@ export async function loadFavorites(): Promise<string> {
         <p>Something went wrong while loading favorite products. Try refreshing the page.</p>
       </div>`;
   } finally {
-    showLoader(false)
+    showLoader(false, '.coffee-cards');
   }
 }
 
@@ -45,10 +46,16 @@ window.addEventListener("pageLoaded", async(e: Event) => {
   const baseNoSlash = base.endsWith('/') && base.length > 1 ? base.slice(0, -1) : base;
   if (path === "/" || path === base || path === baseNoSlash) {
     const coffeeCard = document.querySelector(".coffee-card");
-    showLoader(true)
     if (coffeeCard) {
-      coffeeCard.innerHTML = await loadFavorites();
-      initFavoritesSlider();
+      try {
+        const html = await loadFavorites(true);
+        coffeeCard.innerHTML = html;
+        if (typeof initFavoritesSlider === 'function') {
+          initFavoritesSlider();
+        }
+      } catch (err) {
+        console.error('[main] Error loading favorites:', err);
+      }
     }
   }
   const productCards = Array.from(document.getElementsByClassName("product-card"));
@@ -78,30 +85,70 @@ window.addEventListener("pageLoaded", async(e: Event) => {
     showCurrentSlide();
     changeSlideIndicator();
   });
+
+
+  const cartDisplay = document.getElementsByClassName("cartDisplay").item(0) as HTMLElement | null;
+  const productsAmount = document.querySelector('.products-amount') as HTMLElement | null;
+  const cartLogo = document.querySelector('.cart-logo') as HTMLElement | null;
+
+  if (cartDisplay) {
+    if (localStorage.getItem('token') !== null) {
+      cartDisplay.style.visibility = "visible";
+      if (productsAmount) productsAmount.style.visibility = 'visible';
+      if (cartLogo) cartLogo.style.visibility = 'visible';
+    } else {
+      if(localStorage.getItem('cartItems') !== null) {
+        if (cartLogo) cartLogo.style.visibility = 'visible';
+      } else {
+        if (cartLogo) cartLogo.style.visibility = 'hidden';
+      }
+      if (productsAmount) productsAmount.style.visibility = 'hidden';
+      cartDisplay.style.visibility = "hidden";
+    }
+  }
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => router(), 0);
-  const homeAnchor = document.querySelector('.nav-list-home a');
-  homeAnchor?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const base = import.meta.env.BASE_URL ?? '/';
-    const href = base;
-    history.pushState({}, '', href);
-    router();
-  });
+  router()
+  
   setTimeout(async () => {
     const path = window.location.pathname;
     const base = import.meta.env.BASE_URL ?? '/';
     const baseNoSlash = base.endsWith('/') && base.length > 1 ? base.slice(0, -1) : base;
-    if ((path === '/' || path === base || path === baseNoSlash) && !favoritesLoaded) {
+    if ((path === '/' || path === base || path === baseNoSlash)) {
       const coffeeCard = document.querySelector('.coffee-card');
       if (coffeeCard) {
-        coffeeCard.innerHTML = await loadFavorites();
-        initFavoritesSlider();
+        if (!favoritesLoaded) {
+          coffeeCard.innerHTML = await loadFavorites(true);
+          initFavoritesSlider();
+        } else {
+          if (favoriteHTML) {
+            coffeeCard.innerHTML = favoriteHTML;
+            initFavoritesSlider();
+          }
+        }
       }
     }
   }, 3000);
+  const cartDisplay = document.getElementsByClassName("cartDisplay").item(0) as HTMLElement | null;
+  const productsAmount = document.querySelector('.products-amount') as HTMLElement | null;
+  const cartLogo = document.querySelector('.cart-logo') as HTMLElement | null;
+
+  if (cartDisplay) {
+    if (localStorage.getItem('token') !== null) {
+      cartDisplay.style.visibility = "visible";
+      if (productsAmount) productsAmount.style.visibility = 'visible';
+      if (cartLogo) cartLogo.style.visibility = 'visible';
+    } else {
+      if(localStorage.getItem('cartItems') !== null) {
+        if (cartLogo) cartLogo.style.visibility = 'visible';
+      } else {
+        if (cartLogo) cartLogo.style.visibility = 'hidden';
+      }
+      if (productsAmount) productsAmount.style.visibility = 'hidden';
+      cartDisplay.style.visibility = "hidden";
+    }
+  }
 });
 
 window.addEventListener("popstate", () => {

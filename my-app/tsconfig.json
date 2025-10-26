@@ -15,13 +15,13 @@
     "noEmit": true,
 
     /* Linting */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": false,
+    "noUncheckedSideEffectImports": true,
 
-    "noImplicitAny": false,
+    "noImplicitAny": true,
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.mjs", "**/*.js"]

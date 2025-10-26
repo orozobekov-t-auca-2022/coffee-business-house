@@ -1,3 +1,4 @@
+import { showSuccess } from "../components/showSuccess";
 import { router } from "../router";
 
 export function loginService(): void{
@@ -12,21 +13,24 @@ export function loginService(): void{
         const login = (document.getElementById('login') as HTMLInputElement).value;
         const password = (document.getElementById('password') as HTMLInputElement).value;
 
-        let errorCredentials = loginForm.querySelector('.error-credentials') as HTMLDivElement;
-        if (!errorCredentials) {
-            errorCredentials = document.createElement('div');
-            errorCredentials.classList.add('error-credentials');
-            errorCredentials.textContent = '⚠ Invalid login or password';
-            loginForm.insertAdjacentElement('beforeend', errorCredentials);
-        }
-
         const formData = {
             login,
             password
         }
 
+        let errorCredentials = loginForm.querySelector('.error-credentials') as HTMLDivElement;
+        if (!errorCredentials) {
+            errorCredentials = document.createElement('div');
+            errorCredentials.classList.add('error-credentials');
+            errorCredentials.textContent = '⚠ Invalid login or password';
+            errorCredentials.style.display = 'none';
+            errorCredentials.setAttribute('role', 'alert');
+            errorCredentials.setAttribute('aria-live', 'assertive');
+            loginForm.insertAdjacentElement('beforeend', errorCredentials);
+        }
+        errorCredentials.style.display = 'none';
 
-        const sender = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/login`, {
+        await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/login`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -43,6 +47,7 @@ export function loginService(): void{
             return response.json();
         }).then(response => {
             console.log('Successful POST ', response);
+            showSuccess("Login successful! Redirecting to menu...");
             errorCredentials.style.display = 'none';
             localStorage.setItem('token', response.data.access_token);
             const base = import.meta.env.BASE_URL ?? '/';
@@ -55,7 +60,7 @@ export function loginService(): void{
 
 
     const inputsToValidate = [
-        { id: 'login', message: '⚠ Login must start with a letter and contain only letters and numbers' },
+        { id: 'login', message: '⚠ Login must start with a letter and contain only English letters' },
         { id: 'password', message: '⚠ Password must be at least 6 characters long and contain at least one special character' }
     ];
 
@@ -71,7 +76,7 @@ export function loginService(): void{
         let isValid = true;
 
         if (id === 'login') {
-            isValid = /^[A-Za-z][A-Za-z0-9]{2,}$/.test(input.value);
+            isValid = /^[A-Za-z][A-Za-z]{2,}$/.test(input.value);
         } else if (id === 'password') {
             isValid = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{6,}$/.test(input.value);
         }
