@@ -2,6 +2,7 @@ import { showLoader } from "../components/showLoader";
 import { showNotification } from "../components/showNotification";
 import { showSuccess } from "../components/showSuccess";
 import type { CartItem, Order } from "../types/cart";
+import { safeFetch } from './http';
 
 
 
@@ -189,7 +190,7 @@ export default async function fetchDataForCart() {
             showLoader(true);
             confirmButton.setAttribute('disabled', 'true');
 
-            const response = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/orders/confirm`, {
+            const response = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}/orders/confirm`, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -231,12 +232,20 @@ function resetPage() {
 }
 
 async function fetchProfileData() {
-    const profileInfo = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/auth/profile`, {
-        method: 'GET',
-        headers: {
-            Authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
-        }}).then(res => res.json());
-    return profileInfo.data;
+    try {
+        const profileRes = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}/auth/profile`, {
+            method: 'GET',
+            headers: {
+                Authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
+            }
+        });
+        if (!profileRes.ok) throw new Error('Failed to fetch profile');
+        const profileJson = await profileRes.json();
+        return profileJson.data;
+    } catch (err) {
+        console.error('[fetchDataForCart] fetch profile error', err);
+        throw err;
+    }
 }
 
 function groupBySimilarProducts(formData: Order) : Order{

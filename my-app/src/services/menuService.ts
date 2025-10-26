@@ -4,6 +4,7 @@ import { coffeeImages } from "../imageDictionaries/coffeeImages";
 import { dessertsImages } from "../imageDictionaries/dessertsImages";
 import { teaImages } from "../imageDictionaries/teaImages";
 import { router } from "../router";
+import { safeFetch } from './http';
 import { Categories, type Product } from "../types/product";
 
 const currentCategory: Categories = Categories.Coffee;
@@ -13,13 +14,18 @@ const teaProducts: Product[] = []
 const dessertProducts: Product[] = []
 
 export default async function menuService(): Promise<Product[]> {
-    const response = await fetch(import.meta.env.VITE_COFFEE_API_KEY + '/products');
-    if(!response.ok) {
-        throw new Error('Failed to fetch products')
+    try {
+        const response = await safeFetch(import.meta.env.VITE_COFFEE_API_KEY + '/products');
+        if(!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+        const data = await response.json();
+        products = data['data'];
+        return products;
+    } catch (err) {
+        console.error('[menuService] fetch products error', err);
+        throw err;
     }
-    const data = await response.json();
-    products = data['data'];
-    return products;
 }
 
 function sortProductsByCategories(): void {
@@ -181,8 +187,9 @@ function attachModalListeners(currentProducts: Product[], currentCategory: Categ
         const start = Date.now();
         const wait = (ms: number) => new Promise<void>(res => setTimeout(res, ms));
 
-        try {
-            const res = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/products/${currentProducts[i].id}`);
+            try {
+            const res = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}/products/${currentProducts[i].id}`);
+            if (!res.ok) throw new Error(`Failed to fetch product ${currentProducts[i].id}`);
             const productData = await res.json();
             const product = productData.data;
             const selectedItem = product;

@@ -1,5 +1,6 @@
 import { showSuccess } from "../components/showSuccess";
 import { router } from "../router";
+import { safeFetch } from './http';
 
 export function loginService(): void{
     const loginForm = document.querySelector(".login-form") as HTMLFormElement;
@@ -30,32 +31,29 @@ export function loginService(): void{
         }
         errorCredentials.style.display = 'none';
 
-        await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/login`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData)
-        }).then(response => {
-            console.log('Response status:', response.status);
-            if (!response.ok) {
+        try {
+            const res = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/login`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData)
+            });
+            if (!res.ok) {
                 errorCredentials.style.display = 'block';
-                throw new Error(`Error with status: ${response.status}`);   
+                throw new Error(`Error with status: ${res.status}`);
             }
-            
-            return response.json();
-        }).then(response => {
-            console.log('Successful POST ', response);
+            const response = await res.json();
             showSuccess("Login successful! Redirecting to menu...");
             errorCredentials.style.display = 'none';
             localStorage.setItem('token', response.data.access_token);
             const base = import.meta.env.BASE_URL ?? '/';
             history.pushState({}, "", `${base}menu`);
             router();
-        }).catch(error => {
-            console.log(error)
-        })
+        } catch (error) {
+            console.error(error);
+        }
     })
 
 

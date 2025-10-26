@@ -1,4 +1,5 @@
 import { showSuccess } from "../components/showSuccess";
+import { safeFetch } from './http';
 
 export function registrationService():void{
     const regForm = document.querySelector(".register-form") as HTMLFormElement;
@@ -84,28 +85,24 @@ export function registrationService():void{
         }
 
 
-        await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/register`, {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData)
-        }).then(response => {
-            console.log('Response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`Error with status: ${response.status}`);   
+        try {
+            const res = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}` + `/auth/register`, {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData)
+            });
+            if (!res.ok) {
+                throw new Error(`Error with status: ${res.status}`);
             }
-            const errorMsg = document.querySelector('.error-message');
-            errorMsg?.remove();
-            return response.json();
-        }).then(response => {
-            console.log('Successful POST ', response);
+            await res.json();
             showSuccess("Registration successful! You can now log in.");
             const credError = document.querySelector('.error-cred-message') as HTMLElement | null;
-            if(credError) credError.textContent = '';
-        }).catch(error => {
-            const msg = 'Something wrong happened during registration. The user with the same credentials already exists.'
+            if (credError) credError.textContent = '';
+        } catch (error) {
+            const msg = 'Something wrong happened during registration. The user with the same credentials already exists.';
             const existing = document.querySelector('.error-cred-message') as HTMLElement | null;
             if (existing) {
                 existing.innerHTML = `<p>${msg}</p>`;
@@ -115,13 +112,13 @@ export function registrationService():void{
                 errDiv.innerHTML = `<p>${msg}</p>`;
                 regForm.prepend(errDiv);
             }
-            
+
             if (registerButton) {
                 registerButton.disabled = false;
                 registerButton.classList.remove('disabled');
             }
-            console.log(error);
-        })
+            console.error(error);
+        }
     })
 
     const cityToStreets = {
