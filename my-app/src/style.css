@@ -4,13 +4,26 @@
     margin: 0;
     padding: 0;
 }
+:root{
+    --dark-text: rgba(64, 63, 61, 1);
+    --light-text: rgba(225, 212, 201, 1);
+    --accent-text: rgba(176, 144, 122, 1);
+
+    --body-background: rgba(225, 212, 201, 1);
+    --container-background: rgba(102, 95, 85, 1);
+    --backdrop-background: rgba(64, 63, 61, 0.8);
+
+    --border-light: rgba(193, 182, 173, 1);
+    --border-dark: rgba(102, 95, 85, 1);
+}
+
 html {
     scroll-behavior: smooth;
     transition: all 0.5s ease;
 }
 body{
     margin: 20px 40px;
-    background-color: rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
     overflow-x: hidden;
     position: relative;
 }
@@ -40,7 +53,7 @@ body{
 }
 li a{
     text-decoration: none;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     font-weight: 600;
     font-size: 16px;
 }
@@ -53,7 +66,7 @@ li a{
     gap: 8px;
 }
 .nav-menu:hover{
-    border-bottom: 2px solid rgba(64, 63, 61, 1);
+    border-bottom: 2px solid var(--dark-text);
 }
 .header-main{
     width: 100%;
@@ -76,19 +89,19 @@ li a{
     left: 100px;
 }
 h1{
-    color: rgba(225, 212, 201, 1);
+    color: var(--light-text);
     font-weight: 600;
     font-size: 72px;
     margin-bottom: 40px;
 }
 .menu-h1{
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     text-align: center;
     max-width: 800px;
     width: 100%;
 }
 .header-text p{
-    color: rgba(225, 212, 201, 1);
+    color: var(--light-text);
     font-weight: 400;
     font-size: 16px;
     line-height: 150%;
@@ -96,11 +109,11 @@ h1{
     margin-bottom: 40px;
 }
 .header-text button{
-    background-color: rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
     width: 200px;
     height: 64px;
     border-radius: 100px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     text-decoration: none;
     border: none;
     outline: none;
@@ -114,7 +127,7 @@ h1{
 }
 .header-text button span{
     text-decoration: none;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -139,7 +152,7 @@ h2{
     font-weight: 600;
     font-size: 60px;
     line-height: 125%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .coffee-cards{
     display: flex;
@@ -153,17 +166,17 @@ h2{
     font-weight: 600px;
     font-size: 24px;
     line-height: 125%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .coffee-cards p{
     font-weight: 400px;
     font-size: 16px;
     line-height: 150%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     margin: 16px 0;
 }
 .swipe-left, .swipe-right{
-    border: 1px solid rgba(102, 95, 85, 1);
+    border: 1px solid var(--container-background);
     width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -175,7 +188,7 @@ h2{
     display: none;
 }
 .swipe-left:hover, .swipe-right:hover{
-    background-color: rgba(102, 95, 85, 1);
+    background-color: var(--container-background);
     cursor: pointer;
 }
 .swipe-left:hover .hoverLeftSwipe, .swipe-right:hover .hoverRightSwipe{
@@ -265,7 +278,7 @@ h2{
 }
 .mobile-app-text p{
     margin: 40px 0;
-    color:rgba(64, 63, 61, 1)
+    color:var(--dark-text)
 }
 .onHover{
     display: none;
@@ -278,7 +291,7 @@ h2{
     all: unset;
     width: 184px;
     height: 64px;
-    border: 1px solid rgba(102, 95, 85, 1);
+    border: 1px solid var(--container-background);
     border-radius: 100px;
     display: flex;
     align-items: center;
@@ -287,14 +300,14 @@ h2{
     padding: 0 0 0 20px;
 }
 .download-buttons button:hover{
-    background-color: rgba(102, 95, 85, 1);
-    color: rgba(225, 212, 201, 1);
+    background-color: var(--container-background);
+    color: var(--light-text);
 }
 .download-buttons button:hover .app-store-text span, .download-buttons button:hover .app-store-text strong{
-    color: rgba(225, 212, 201, 1);
+    color: var(--light-text);
 }
 .download-buttons button:hover .google-play-text span, .download-buttons button:hover .google-play-text strong{
-    color: rgba(225, 212, 201, 1);
+    color: var(--light-text);
 }
 .download-buttons button:hover .onHover{
     display: block;
@@ -313,13 +326,13 @@ h2{
     font-size: 10px;
     font-weight: 600;
     line-height: 140%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .app-store-text strong, .google-play-text strong{
     font-size: 16px;
     font-weight: 600;
     line-height: 150%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 
 
@@ -333,11 +346,11 @@ h2{
 }
 .product-options button{
     all: unset;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     border-radius: 100px;
     font-size: 16px;
     font-weight: 600;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     line-height: 150%;
     padding: 11px 16px 11px 8px;
     display: flex;
@@ -347,7 +360,7 @@ h2{
 .product-icon{
     width: 30px;
     height: 30px;
-    background-color: rgba(193, 182, 173, 1);
+    background-color: var(--border-light);
     border-radius: 100px;
     display: flex;
     align-items: center;
@@ -357,24 +370,24 @@ h2{
     cursor: pointer;
 }
 .product-options button:hover{
-    background-color: rgba(102, 95, 85, 1);
-    border: 1px solid rgba(102, 95, 85, 1);
-    color: rgba(225, 212, 201, 1);
+    background-color: var(--container-background);
+    border: 1px solid var(--container-background);
+    color: var(--light-text);
 }
 .active{
-    background-color: rgba(102, 95, 85, 1) !important;
-    border: 1px solid rgba(102, 95, 85, 1) !important;
-    color: rgba(225, 212, 201, 1) !important;
+    background-color: var(--container-background) !important;
+    border: 1px solid var(--container-background) !important;
+    color: var(--light-text) !important;
 }
 .product-options button:hover .product-icon{
-    background-color: rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
 }
 .active .product-icon{
-    background-color: rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
 }
 .active .size, .active .additInd{
-    background-color: rgba(225, 212, 201, 1);
-    color: rgba(64, 63, 61, 1);
+    background-color: var(--light-text);
+    color: var(--dark-text);
 }
 .menu-items{
     display: flex;
@@ -388,7 +401,7 @@ h2{
 .menu-item{
     width: 310px;
     height: 506px;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     border-radius: 40px;
     cursor: pointer;
     overflow: hidden;
@@ -430,18 +443,18 @@ h2{
     font-size: 24px;
     line-height: 125%;
     font-weight: 600;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     margin-bottom: 12px;
 }
 .menu-item-text p{
     font-weight: 400;
     font-size: 16px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     line-height: 150%;
 }
 .modal{
     z-index: 1000;
-    background-color: rgba(64, 63, 61, 0.8);
+    background-color: var(--backdrop-background);
     position: fixed;
     left: 0;
     top: 0;
@@ -452,7 +465,7 @@ h2{
 }
 .modal-content{
     width: 800px;
-    background-color: rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -477,20 +490,20 @@ h2{
     font-size: 24px;
     line-height: 125%;
     margin-bottom: 12px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .modal-text p, .modal-text label{
     font-weight: 400;
     font-size: 16px;
     line-height: 150%;
     margin-bottom: 20px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .sizes .modal-text-option-btns, .additives .modal-text-option-btns{
     all: unset;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     font-size: 16px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     border-radius: 100px;
     height: 46px;
     padding-right: 16px;
@@ -501,19 +514,19 @@ h2{
     cursor: pointer;
 }
 .modal-text-option-btns:hover{
-    background-color: rgba(102, 95, 85, 1);
-    color: rgba(225, 212, 201, 1);
-    border: 1px solid rgba(102, 95, 85, 1);
+    background-color: var(--container-background);
+    color: var(--light-text);
+    border: 1px solid var(--container-background);
 }
 .modal-text-option-btns:hover .size, .modal-text-option-btns:hover .additInd{
-    background-color: rgba(225, 212, 201, 1);
-    color: rgba(64, 63, 61, 1);
-    border: 1px solid rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
+    color: var(--dark-text);
+    border: 1px solid var(--light-text);
 }
 .size, .additInd{
     width: 30px;
     height: 30px;
-    background-color: rgba(193, 182, 173, 1);
+    background-color: var(--border-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -539,12 +552,12 @@ h2{
 }
 .modal-disclaimer{
     font-size: 10px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     font-weight: 600px;
     line-height: 140%;
     height: 52px;
     gap: 8px;
-    border-top: 1px solid rgba(193, 182, 173, 1);
+    border-top: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     padding: 12px 0;
@@ -555,8 +568,8 @@ h2{
 }
 .add-to-cart-btn{
     all: unset;
-    border: 1px solid rgba(102, 95, 85, 1);
-    color: rgba(64, 63, 61, 1);
+    border: 1px solid var(--container-background);
+    color: var(--dark-text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -568,8 +581,8 @@ h2{
     cursor: pointer;
 }
 .add-to-cart-btn:hover{
-    background-color: rgba(102, 95, 85, 1);
-    color: rgba(225, 212, 201, 1);
+    background-color: var(--container-background);
+    color: var(--light-text);
 }
 .loadmore-container{
     display: none;
@@ -582,7 +595,7 @@ h2{
     transform: translate(0, -50%);
     width: 44px;
     height: 44px;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     border-radius: 100px;
     display: flex;
     align-items: center;
@@ -591,8 +604,8 @@ h2{
 }
 
 footer{
-    background-color: rgba(102, 95, 85, 1);
-    color: rgba(225, 212, 201, 1);
+    background-color: var(--container-background);
+    color: var(--light-text);
     border-radius: 40px;
     display: flex;
     justify-content: space-between;
@@ -600,7 +613,7 @@ footer{
     align-items: center;
 }
 .footer-logo-and-socials h2{
-    color: rgba(225, 212, 201, 1);
+    color: var(--light-text);
     width: 100%;
     max-width: 530px;
     text-align: start;
@@ -615,7 +628,7 @@ footer{
     all: unset;
     width: 60px;
     height: 60px;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -626,9 +639,9 @@ footer{
     display: none;
 }
 .footer-socials button:hover{
-    background-color: rgba(225, 212, 201, 1);
-    color: rgba(64, 63, 61, 1);
-    border: 1px solid rgba(225, 212, 201, 1);
+    background-color: var(--light-text);
+    color: var(--dark-text);
+    border: 1px solid var(--light-text);
 }
 .footer-socials button:hover .twitterHover, .footer-socials button:hover .instagramHover, .footer-socials button:hover .facebookHover{
     display: block;
@@ -664,10 +677,10 @@ footer{
     padding-bottom: 4px;
 }
 .footer-contact-us ul li a:hover{
-    border-bottom: 2px solid rgba(225, 212, 201, 1);
+    border-bottom: 2px solid var(--light-text);
 }
 .footer-contact-us ul li a{
-    color: rgba(193, 182, 173, 1);
+    color: var(--border-light);
     font-size: 16px;
     font-weight: 600;
     line-height: 150%;
@@ -704,7 +717,7 @@ footer{
 }
 .mobileSidebar .sidebar-nav-links li a {
     list-style: none;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     text-decoration: none;
     font-size: 32px;
     font-weight: 600;
@@ -718,7 +731,7 @@ footer{
     gap: 16px;
 }
 .sidebar-nav-menu a{
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     text-decoration: none;
     font-size: 32px;
     font-weight: 600;
@@ -756,7 +769,7 @@ footer{
     font-weight: 600;
     font-size: 16px;
     line-height: 150%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .login-page{
     margin: 20px 0 100px 0;
@@ -781,13 +794,13 @@ footer{
 .input-group label{
     font-size: 16px;
     font-weight: 400;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     display: block;
     margin-bottom: 4px;
 }
 .input-group input{
     all: unset;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     width: 100%;
     height: 56px;
     color: rgba(161, 168, 179, 1);
@@ -812,7 +825,7 @@ footer{
     opacity: 1;
     padding-top: 10px 78px 10px 78px;
     border-radius: 100px;
-    border: 1px solid rgba(102, 95, 85, 1);
+    border: 1px solid var(--container-background);
 
     font-weight: 600;
     font-style: Semi Bold;
@@ -820,7 +833,7 @@ footer{
     line-height: 150%;
     letter-spacing: 0%;
     text-align: center;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     margin-top: 40px;
     cursor: pointer;
 }
@@ -864,7 +877,7 @@ footer{
     font-size: 16px;
     font-weight: 400;
     line-height: 150%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .pay-option{
     display: flex;
@@ -875,7 +888,7 @@ footer{
     all: unset;
     width: 16px;
     height: 16px;
-    border: 1px solid rgba(102, 95, 85, 1);
+    border: 1px solid var(--container-background);
     border-radius: 50%;
     cursor: pointer;
     box-sizing: border-box;
@@ -884,7 +897,7 @@ footer{
     all: unset;
     width: 16px;
     height: 16px;
-    border: 5px solid rgba(102, 95, 85, 1);
+    border: 5px solid var(--container-background);
     border-radius: 50%;
     cursor: pointer;
     box-sizing: border-box;
@@ -894,8 +907,8 @@ footer{
     max-width: 200px;
     width: 100%;
     height: 44px;
-    border: 1px solid rgba(102, 95, 85, 1);
-    color: rgba(64, 63, 61, 1);
+    border: 1px solid var(--container-background);
+    color: var(--dark-text);
     font-size: 16px;
     font-weight: 600;
     line-height: 150%;
@@ -920,7 +933,7 @@ footer{
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(64, 63, 61, 0.8);
+    background: var(--backdrop-background);
     width: 100vw;
     height: 100vh;
     z-index: 2000;
@@ -946,7 +959,7 @@ footer{
 }
 .cart-total span{
     font-size: 24px;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
     font-weight: 600;
     line-height: 125%;
 }
@@ -966,8 +979,8 @@ footer{
 }
 .cart-actions button{
     all: unset;
-    border: 1px solid rgba(102, 95, 85, 1);
-    color: rgba(64, 63, 61, 1);
+    border: 1px solid var(--container-background);
+    color: var(--dark-text);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -992,7 +1005,7 @@ footer{
     max-width: 1107px;
     width: 100%;
     height: 62px;
-    color: rgba(64, 63, 61, 1)
+    color: var(--dark-text)
 }
 .cart-item-info h3{
     font-weight: 600;
@@ -1012,7 +1025,7 @@ footer{
     font-weight: 600;
     font-size: 24px;
     line-height: 125%;
-    color: rgba(64, 63, 61, 1)
+    color: var(--dark-text)
 }
 .cart-item-price .strikethrough{
     text-decoration: line-through;
@@ -1038,7 +1051,7 @@ footer{
     opacity: 1;
     border-radius: 12px;
     border-width: 1px;
-    border: 1px solid rgba(193, 182, 173, 1);
+    border: 1px solid var(--border-light);
     display: flex;
     align-items: center;
 
@@ -1188,7 +1201,7 @@ input[type=number]::-webkit-outer-spin-button {
     font-weight: 600;
     font-size: 24px;
     line-height: 125%;
-    color: rgba(64, 63, 61, 1);
+    color: var(--dark-text);
 }
 .add-info-first{
     max-width: 1135px;
@@ -1262,13 +1275,13 @@ input[type=number]::-webkit-outer-spin-button {
     .burgerBtns{
         width: 44px;
         height: 44px;
-        border: rgba(102, 95, 85, 1);
+        border: var(--container-background);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
         gap: 8px;
-        border: 1px solid rgba(102, 95, 85, 1);
+        border: 1px solid var(--container-background);
         border-radius: 100px;
         transition: 3 ease;
         z-index: 1003;
@@ -1311,8 +1324,8 @@ input[type=number]::-webkit-outer-spin-button {
         left: 0;
         width: 100vw;
         height: 100%;
-        background-color: rgba(225, 212, 201, 1);
-        color: rgba(64, 63, 61, 1);
+        background-color: var(--light-text);
+        color: var(--dark-text);
         transform: none;
     }
     header{
@@ -1369,7 +1382,7 @@ input[type=number]::-webkit-outer-spin-button {
     }
     .loadmore-btn{
         all: unset;
-        border: 1px solid rgba(102, 95, 85, 1);
+        border: 1px solid var(--container-background);
         border-radius: 100px;
         display: flex;
         align-items: center;
