@@ -3,7 +3,6 @@ import { showNotification } from "../components/showNotification";
 import { coffeeImages } from "../imageDictionaries/coffeeImages";
 import { dessertsImages } from "../imageDictionaries/dessertsImages";
 import { teaImages } from "../imageDictionaries/teaImages";
-import { router } from "../router";
 import { safeFetch } from './http';
 import { Categories, type Product } from "../types/product";
 

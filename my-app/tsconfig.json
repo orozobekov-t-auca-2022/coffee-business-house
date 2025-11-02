@@ -22,6 +22,8 @@
     "noUncheckedSideEffectImports": true,
 
     "noImplicitAny": true,
+
+    "jsx": "react-jsx"
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "**/*.mjs", "**/*.js"]
