@@ -29,15 +29,18 @@ function Header() {
                     </ul>
                 </li>
                 <ul className="cartAndMenu">
-                    <li className="cartDisplay">
-                        <svg className="cart-logo" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M16.0942 8.36255L17.1455 15.1959C17.3319 16.4074 16.3945 17.5 15.1688 17.5H4.83122C3.60545 17.5 2.66809 16.4074 2.85448 15.1959L3.90576 8.36255C4.05586 7.38689 4.89536 6.66667 5.88251 6.66667H14.1175C15.1046 6.66667 15.9441 7.38689 16.0942 8.36255Z" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                            <path d="M11.6663 4.16667C11.6663 3.24619 10.9201 2.5 9.99967 2.5C9.0792 2.5 8.33301 3.24619 8.33301 4.16667" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        <span className="productsAmount">0</span>
-                    </li>
+                    {
+                        (localStorage.getItem('token')) ? (
+                        <Link to={"/cart"} className="cartDisplay">
+                            <svg className="cart-logo" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.0942 8.36255L17.1455 15.1959C17.3319 16.4074 16.3945 17.5 15.1688 17.5H4.83122C3.60545 17.5 2.66809 16.4074 2.85448 15.1959L3.90576 8.36255C4.05586 7.38689 4.89536 6.66667 5.88251 6.66667H14.1175C15.1046 6.66667 15.9441 7.38689 16.0942 8.36255Z" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                <path d="M11.6663 4.16667C11.6663 3.24619 10.9201 2.5 9.99967 2.5C9.0792 2.5 8.33301 3.24619 8.33301 4.16667" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            <span className="productsAmount">0</span>
+                        </Link>
+                        ) : (<></>)
+                    }
                     <li className="nav-menu">
-                        {/* Use a route relative to the router basename (BrowserRouter basename handles BASE_URL) */}
                         <Link to="/menu">Menu</Link>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.167 9.76667V11.6667C14.167 14.8883 11.5553 17.5 8.33366 17.5C5.112 17.5 2.50033 14.8883 2.50033 11.6667V9.76667C2.50033 9.4353 2.76896 9.16667 3.10033 9.16667H13.567C13.8984 9.16667 14.167 9.4353 14.167 9.76667Z" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

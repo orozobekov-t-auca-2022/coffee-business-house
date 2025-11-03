@@ -8,13 +8,13 @@ export interface Order {
     totalPrice: number;
 }
 
-interface SizeOption {
+export interface SizeOption {
     size: string;
     price: string;
     discountPrice?: string | null;
 }
 
-interface Additive {
+export interface Additive {
     name: string;
     price: string;
     discountPrice?: string | null;
@@ -33,4 +33,14 @@ export interface CartItem {
     selectedAdditives: Additive[];
     sizes: Record<string, SizeOption>;
     selectedSize: Record<string, SizeOption>;
+}
+
+export interface Profile {
+    id: number;
+    login: string;
+    city: string;
+    street: string;
+    houseNumber: number;
+    paymentMethod: string;
+    createdAt: string;
 }

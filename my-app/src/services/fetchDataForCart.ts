@@ -231,7 +231,7 @@ function resetPage() {
     if (prodList) { prodList.innerHTML = '' }
 }
 
-async function fetchProfileData() {
+export async function fetchProfileData() {
     try {
         const profileRes = await safeFetch(`${import.meta.env.VITE_COFFEE_API_KEY}/auth/profile`, {
             method: 'GET',

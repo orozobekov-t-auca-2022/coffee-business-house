@@ -754,8 +754,8 @@ footer{
     width: 38px;
     display: flex;
     justify-content: space-between;
-    visibility: hidden;
-    cursor:pointer
+    cursor:pointer;
+    text-decoration: none;
 }
 .cartAndMenu{
     display: flex;
@@ -770,6 +770,7 @@ footer{
     font-size: 16px;
     line-height: 150%;
     color: var(--dark-text);
+    text-decoration: none;
 }
 .login-page{
     margin: 20px 0 100px 0;
