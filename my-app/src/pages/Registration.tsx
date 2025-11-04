@@ -1,5 +1,7 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import type { RegistrationData } from "../types/register"
+import { registrationService } from "../services/registrationService";
+import { useNavigate } from "react-router-dom";
 
 function Registration() {
     const [registerData, setRegisterData] = useState<RegistrationData>({
@@ -12,6 +14,7 @@ function Registration() {
         paymentMethod: null
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
+    const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
     const inputsToValidate = [
         { id: 'login', message: '⚠ Login must start with a letter, contain only English letters and be at least 3 characters long' },
@@ -38,19 +41,42 @@ function Registration() {
                 break;
             case "password":
                 if (!regex.password.test(String(value)))
-                    message = "Password must contain at least 6 chars, 1 letter and 1 number.";
+                    message = inputsToValidate[1].message;
                 break;
             case "confirmPassword":
                     if (value !== registerData.password)
-                        message = "Passwords do not match.";
+                        message = inputsToValidate[2].message;
+                break;
+            case "city":
+                    if (!value) message = inputsToValidate[3].message;
+                break;
+            case "street":
+                    if (!value) message = inputsToValidate[4].message;
                 break;
             case "houseNumber":
-                if (Number(value) < 1) message = "House number must be greater than 0.";
+                if (Number(value) < 2) message = inputsToValidate[5].message;
+                break;
+            case "paymentMethod":
+                    if (!value) message = inputsToValidate[6].message;
                 break;
         }
 
         setErrors(prev => ({ ...prev, [name]: message }));
     }
+    useEffect(() => {
+        if(registerData.password !== registerData.confirmPassword) {
+            validateField('confirmPassword', registerData.confirmPassword);
+        }
+    }, [registerData.password])
+
+    useEffect(() => {
+        if(!registerData.city) {
+            validateField('city', registerData.city)
+        }
+        if(!registerData.street) {
+            validateField('street', registerData.street)
+        }
+    }, [registerData.city])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target
@@ -71,9 +97,15 @@ function Registration() {
         validateField(name, finalVal)
     }
 
+    const navigate = useNavigate()
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
-        console.log(registerData)
+        try{
+            registrationService(registerData)
+            navigate('/menu')
+        } catch (error) {
+            console.error("Registration failed:", error)
+        }
     }
 
     const cityToStreets = {
@@ -81,6 +113,12 @@ function Registration() {
         Kioto: ["Shijo-dori", "Pontocho", "Shimbashi-dori", "Yasaka-dori", "Shirakawa-dori", "Nishiki Market", "Gion", "Philosopher's Path", "Arashiyama", "Fushimi Inari"],
         Yokohama: ["Kawasaki", "Yokosuka", "Zushi", "Kamakura", "Fujisawa", "Yamato", "Machida", "Yamashita Park", "Minato Mirai", "Motomachi"]
     };
+
+    useEffect(() => {
+        const hasErrors = Object.values(errors).some(err => err)
+        const hasAllFilled = registerData.login && registerData.password && registerData.confirmPassword && registerData.city && registerData.street && registerData.houseNumber && registerData.paymentMethod;
+        setIsFormValid(!hasErrors && Boolean(hasAllFilled))
+    },[errors, registerData])
 
     return <>
         <div className="register-page">
@@ -90,17 +128,19 @@ function Registration() {
                     <div className="input-group">
                         <label htmlFor="login">Login</label>
                         <input type="text" id="login" name="login" placeholder="Placeholder" value={registerData.login} onChange={handleChange} required />
-                        {errors.login && <span className="error">{errors.login}</span>}
+                        {errors.login && <span className="error-message">{errors.login}</span>}
                     </div>
 
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
                         <input type="password" id="password" name="password" placeholder="Placeholder" value={registerData.password} onChange={handleChange} required />
+                        {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
 
                      <div className="input-group">
                         <label htmlFor="confirm-password">Confirm Password</label>
                         <input type="password" id="confirm-password" name="confirmPassword" placeholder="Placeholder" value={registerData.confirmPassword} onChange={handleChange} required />
+                        {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                     </div>
                 </div>
                 <div className="register-input-wrapper secondRow">
@@ -112,23 +152,27 @@ function Registration() {
                             <option value="Kioto">Kioto</option>
                             <option value="Yokohama">Yokohama</option>
                         </select>
+                        {errors.city && <span className="error-message">{errors.city}</span>}
                     </div>
 
 
                      <div className="input-group">
                         <label htmlFor="street">Street</label>
                         <select className="drop-down" id="street" name="street" value={registerData.street} onChange={handleChange} required>
+                            <option value="" disabled>Select a street</option>
                             {
                                 cityToStreets[registerData.city as keyof typeof cityToStreets]?.map((street) => (
                                     <option key={street} value={street}>{street}</option>
                                 ))
                             }
                         </select>
+                        {errors.street && <span className="error-message">{errors.street}</span>}
                     </div>
 
                     <div className="input-group">
                         <label htmlFor="house-number">House number</label>
                         <input type="number" min="2" id="house-number" name="houseNumber" placeholder="Placeholder" value={registerData.houseNumber} onChange={handleChange} required />
+                        {errors.houseNumber && <span className="error-message">{errors.houseNumber}</span>}
                     </div>
 
                     <div className="paying-options">
@@ -143,10 +187,10 @@ function Registration() {
                                 <label htmlFor="card">Card</label>
                             </div>
                         </div>
+                        {errors.paymentMethod && <span className="error-message">{errors.paymentMethod}</span>}
                     </div>
                 </div>
-                <button type="submit">Registration</button>
-                <div className="error-cred-message"></div>
+                <button type="submit" disabled={!isFormValid}>Registration</button>
             </form>
         </div>
     </>

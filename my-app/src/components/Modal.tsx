@@ -1,20 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Product } from "../types/product"
 import { showLoader } from "./showLoader";
 import { showNotification } from "./showNotification";
 import type { Additive } from "../types/cart";
-
-interface ModalProps {
-    obj: Product;
-    image: string;
-    onClose: () => void;
-}
+import type { ModalProps, ModalTooltip } from "../types/modal";
 
 function Modal({ obj, image, onClose }: ModalProps) {
     const [product, setProduct] = useState<Product>();
     const [currentSize, setCurrentSize] = useState<string>("");
+    const [currentHoveredSize, setCurrentHoveredSize] = useState<string>("");
+    const [currentHoveredAdditive, setCurrentHoveredAdditive] = useState<number | undefined>();
     const [additives, setAdditives] = useState<Array<Additive>>([]);
     const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [totalPriceWithDiscount, setTotalPriceWithDiscount] = useState<number>(0);
+    const [toolTip, setToolTip] = useState<ModalTooltip>({
+        visible: false,
+        message: "",
+        x: 0,
+        y: 0
+    });
 
     useEffect(() => {
         async function fetchProduct() {
@@ -39,6 +43,9 @@ function Modal({ obj, image, onClose }: ModalProps) {
     
     useEffect(() => {
         calculateTotalPrice();
+        if(localStorage.getItem('token')){
+            calculateTotalPriceWithDiscount();
+        }
     }, [currentSize, additives])
 
     function handleBackgroundClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -70,6 +77,35 @@ function Modal({ obj, image, onClose }: ModalProps) {
         setTotalPrice(price);
     }
 
+    function calculateTotalPriceWithDiscount() {
+        let price = 0;
+        if(localStorage.getItem('token') && product && product.sizes[currentSize.toLowerCase()].discountPrice) {
+            price += parseFloat(product.sizes[currentSize.toLowerCase()].discountPrice);
+            additives.forEach((additive) => {
+                if(additive.discountPrice) {
+                    price += parseFloat(additive.discountPrice);
+                } else {
+                    price += parseFloat(additive.price);
+                }
+            });
+        }
+        setTotalPriceWithDiscount(price);
+    }
+
+    function handleMouseEnter(e: React.MouseEvent<HTMLButtonElement>, priceInfo: { price: string; discountPrice?: string }) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setToolTip({
+            visible: true,
+            message: priceInfo,
+            x: rect.left + rect.width / 2,
+            y: rect.top - 8,
+        });
+    }
+
+    function handleMouseLeave() {
+        setToolTip({...toolTip, visible: false });
+    }
+
     function addToCart() {
         if (!product) return;
         const formData = {
@@ -79,7 +115,8 @@ function Modal({ obj, image, onClose }: ModalProps) {
                 [currentSize]: product!.sizes[currentSize.toLowerCase()]
             },
             'finalPrice': totalPrice,
-            'selectedAdditives': additives
+            'selectedAdditives': additives,
+            'discountPrice': localStorage.getItem('token') ? totalPriceWithDiscount : totalPrice
         }
         if(localStorage.getItem('cartItems')){
             localStorage.setItem('cartItems', JSON.stringify([...JSON.parse(localStorage.getItem('cartItems') as string), formData]));
@@ -88,6 +125,9 @@ function Modal({ obj, image, onClose }: ModalProps) {
         }
     }
 
+    if(!product) {
+        return null;
+    }
     return <>
     {product ? (
         <div className="modal" onClick={handleBackgroundClick}>
@@ -100,7 +140,8 @@ function Modal({ obj, image, onClose }: ModalProps) {
                     <div className="sizes">
                         {
                             Object.keys(product!['sizes']).map((sizeKey, index) => {
-                                return <button className={`modal-text-option-btns ${currentSize === sizeKey ? 'active' : ''}`} data-size={sizeKey} key={sizeKey} onClick={() => changeSize(sizeKey)}>
+                                const sizeInfo = product!.sizes[sizeKey];
+                                return <button className={`modal-text-option-btns ${currentSize === sizeKey ? 'active' : ''}`} data-size={sizeKey} key={sizeKey} onClick={() => changeSize(sizeKey)} onMouseEnter={(e) => {handleMouseEnter(e, { price: sizeInfo.price, discountPrice: sizeInfo.discountPrice}); setCurrentHoveredSize(sizeKey);}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredSize("");}}>
                                     <span className="size">{sizeKey.toUpperCase()}</span>
                                     <span>{product.sizes[sizeKey].size}</span>
                                 </button>
@@ -110,17 +151,31 @@ function Modal({ obj, image, onClose }: ModalProps) {
                     <label>Additives</label>
                     <div className="additives">
                         {
-                            product!['additives'].map((additive, key) => (
-                                <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)}>
+                            product!['additives'].map((additive, key) => {
+                                return <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)} onMouseEnter={(e) => {handleMouseEnter(e, {price: additive.price, discountPrice: additive.discountPrice}); setCurrentHoveredAdditive(key)}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredAdditive(undefined)}}>
                                     <span className="additInd">{key}</span>
                                     <span>{additive.name}</span>
                                 </button>
-                            ))
+                            })
                         }
                     </div>
                     <div className="modal-price">
                         <h3>Total:</h3>
-                        <h3 className="modal-price-text">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                        {
+                            (localStorage.getItem('token') && totalPriceWithDiscount < totalPrice) ? (
+                                <div style={{display:'flex', gap: '20px'}}>
+                                    {totalPriceWithDiscount === 0 ? (<h3 className="modal-price-text">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                                    ) : (
+                                        <>
+                                            <h3 className="modal-price-text">${parseFloat(totalPriceWithDiscount.toString()).toFixed(2)}</h3>
+                                            <h3 className="struck-through-price">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                                        </>
+                                    )}
+                                </div>
+                            ):(
+                                <h3 className="modal-price-text">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                            )
+                        }
                     </div>
                     <button className="add-to-cart-btn" onClick={
                         () => {
@@ -136,6 +191,31 @@ function Modal({ obj, image, onClose }: ModalProps) {
                     </svg>
                 </button>
             </div>
+            {toolTip.visible && (
+                currentHoveredSize ? (
+                    <div className="size-tooltip" style={{left: toolTip.x,top: toolTip.y}}>
+                        {(product.sizes[currentHoveredSize].discountPrice && localStorage.getItem('token')) ? (
+                            <>
+                                <h3>${product.sizes[currentHoveredSize].discountPrice}</h3>
+                                <h3 className="struck-through-price">${product.sizes[currentHoveredSize].price}</h3>
+                            </>
+                        ) : (
+                            <h3>${product.sizes[currentHoveredSize].price}</h3>
+                        )}
+                    </div>
+                ) : currentHoveredAdditive !== undefined ? (
+                    <div className="size-tooltip" style={{left: toolTip.x, top: toolTip.y}}>
+                        {(product.additives[currentHoveredAdditive].discountPrice && localStorage.getItem('token')) ? (
+                            <>
+                                <h3>${product.additives[currentHoveredAdditive].discountPrice}</h3>
+                                <h3 className="struck-through-price">${product.additives[currentHoveredAdditive].price}</h3>
+                            </>
+                        ) : (
+                            <h3>${product.additives[currentHoveredAdditive].price}</h3>
+                        )}
+                    </div>
+                ) : (<></>)
+            )}
         </div>):
         (<></>)
     }

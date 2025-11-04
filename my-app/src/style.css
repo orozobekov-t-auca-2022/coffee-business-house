@@ -967,6 +967,10 @@ footer{
 .cart-total-amount{
     text-align: end;
 }
+.cart-total-amount.strikethrough{
+    text-decoration: line-through;
+    opacity: 50%;
+}
 .cart-actions{
     display: flex;
     align-items: center;
@@ -1206,10 +1210,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .add-info-first{
     max-width: 1135px;
-    width: 100%;
-}
-.add-info-first, .price-info-first{
-    max-width: 1138px;
     width: 100%;
 }
 .additional-information{

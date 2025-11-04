@@ -1,11 +1,13 @@
 export interface Order {
-    items: Array<{
-        productId: number;
-        size: string;
-        additives: Array<string>;
-        quantity: number;
-    }>;
+    items: Array<Product>;
     totalPrice: number;
+}
+
+export interface Product {
+    productId: number;
+    size: string;
+    additives: Array<string>;
+    quantity: number;
 }
 
 export interface SizeOption {
