@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import type { RegistrationData } from "../types/register"
 import { registrationService } from "../services/registrationService";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Registration() {
     const [registerData, setRegisterData] = useState<RegistrationData>({
@@ -15,6 +16,7 @@ function Registration() {
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
+    const {t, i18n} = useTranslation();
 
     const inputsToValidate = [
         { id: 'login', message: '⚠ Login must start with a letter, contain only English letters and be at least 3 characters long' },
@@ -122,30 +124,30 @@ function Registration() {
 
     return <>
         <div className="register-page">
-            <h2>Registration</h2>
+            <h2>{t("registration_page_title_create_account")}</h2>
             <form className="register-form" onSubmit={handleSubmit}>
                 <div className="register-input-wrapper firstRow">
                     <div className="input-group">
-                        <label htmlFor="login">Login</label>
+                        <label htmlFor="login">{t("registration_page_input_login")}</label>
                         <input type="text" id="login" name="login" placeholder="Placeholder" value={registerData.login} onChange={handleChange} required />
                         {errors.login && <span className="error-message">{errors.login}</span>}
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t("registration_page_input_password")}</label>
                         <input type="password" id="password" name="password" placeholder="Placeholder" value={registerData.password} onChange={handleChange} required />
                         {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
 
                      <div className="input-group">
-                        <label htmlFor="confirm-password">Confirm Password</label>
+                        <label htmlFor="confirm-password">{t("registration_page_input_confirm_password")}</label>
                         <input type="password" id="confirm-password" name="confirmPassword" placeholder="Placeholder" value={registerData.confirmPassword} onChange={handleChange} required />
                         {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
                     </div>
                 </div>
                 <div className="register-input-wrapper secondRow">
                     <div className="input-group">
-                        <label htmlFor="city">City</label>
+                        <label htmlFor="city">{t("registration_page_input_city")}</label>
                         <select className="drop-down" id="city" name="city" value={registerData.city} onChange={handleChange} required>
                             <option value="" disabled>Select a city</option>
                             <option value="Tokyo">Tokyo</option>
@@ -157,7 +159,7 @@ function Registration() {
 
 
                      <div className="input-group">
-                        <label htmlFor="street">Street</label>
+                        <label htmlFor="street">{t("registration_page_input_street")}</label>
                         <select className="drop-down" id="street" name="street" value={registerData.street} onChange={handleChange} required>
                             <option value="" disabled>Select a street</option>
                             {
@@ -170,21 +172,21 @@ function Registration() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="house-number">House number</label>
+                        <label htmlFor="house-number">{t("registration_page_input_house_number")}</label>
                         <input type="number" min="2" id="house-number" name="houseNumber" placeholder="Placeholder" value={registerData.houseNumber} onChange={handleChange} required />
                         {errors.houseNumber && <span className="error-message">{errors.houseNumber}</span>}
                     </div>
 
                     <div className="paying-options">
-                        <label>Pay by</label>
+                        <label>{t("registration_page_input_payment_method")}</label>
                         <div className="paying-options-wrapper">
                             <div className="pay-option">
                                 <input type="radio" id="cash" name="paymentMethod" value="cash" checked={registerData.paymentMethod === 'cash'} onChange={handleChange} />
-                                <label htmlFor="cash">Cash</label>
+                                <label htmlFor="cash">{t("registration_page_input_payment_method_cash")}</label>
                             </div>
                             <div className="pay-option">
                                 <input type="radio" id="card" name="paymentMethod" value="card" checked={registerData.paymentMethod === 'card'} onChange={handleChange} />
-                                <label htmlFor="card">Card</label>
+                                <label htmlFor="card">{t("registration_page_input_payment_method_card")}</label>
                             </div>
                         </div>
                         {errors.paymentMethod && <span className="error-message">{errors.paymentMethod}</span>}

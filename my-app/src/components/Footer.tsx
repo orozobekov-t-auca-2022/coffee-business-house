@@ -1,8 +1,12 @@
+import { useTranslation } from "react-i18next";
+
 function Footer() {
+    const {t, i18n} = useTranslation();
+
     return (
         <footer id="contact-us">
         <div className="footer-logo-and-socials">
-            <h2>Sip, Savor, Smile. <span style={{"color": "rgba(176, 144, 122, 1)", "fontStyle": "italic"}}>It’s coffee time!</span></h2>
+            <h2>{t("footer_title_sip_savor_smile")} <span style={{"color": "rgba(176, 144, 122, 1)", "fontStyle": "italic"}}>{t("footer_title_coffee_time")}</span></h2>
             <div className="footer-socials">
                 <button>
                     <svg className="twitterDefault" width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +39,7 @@ function Footer() {
             </div>
         </div>
         <div className="footer-contact-us">
-            <h3>Contact us</h3>
+            <h3>{t("footer_contact")}</h3>
             <ul>
                 <li>
                     <a href="https://maps.app.goo.gl/LHg5UeKZ2jp2JzQN6" target="_blank" rel="noopener noreferrer">
@@ -67,7 +71,7 @@ function Footer() {
                                 </clipPath>
                             </defs>
                         </svg>
-                        <span>Mon-Sat: 9:00 AM – 23:00 PM</span>
+                        <span>{t("footer_contact_schedule")}</span>
                     </a>
                 </li>
             </ul>

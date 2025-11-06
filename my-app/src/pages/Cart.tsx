@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { type Profile, type CartItem, type Order, type Product as OrderProduct } from "../types/cart";
 import { Link } from "react-router-dom";
 import fetchDataForCart from "../services/fetchDataForCart";
+import { useTranslation } from "react-i18next";
+import { showNotification } from "../components/showNotification";
 
 export async function fetchProfileData() {
     try {
@@ -12,7 +14,11 @@ export async function fetchProfileData() {
                 Authorization: localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : '',
             }
         });
-        if (!profileRes.ok) throw new Error('Failed to fetch profile');
+        if (!profileRes.ok){
+            localStorage.removeItem('token');
+            showNotification('Session expired. Please log in again.');
+            throw new Error('Failed to fetch profile');
+        }
         const profileJson = await profileRes.json();
         return profileJson.data;
     } catch (err) {
@@ -30,6 +36,7 @@ function Cart() {
         items: [],
         totalPrice: 0
     });
+    const {t} = useTranslation();
 
     useEffect(() => {
         const storedCartItems = localStorage.getItem("cartItems");
@@ -101,12 +108,11 @@ function Cart() {
         } catch (error) {
             console.error('Error confirming order:', error);
         }
-    }
-
+    }    
 
     return <>
         <div className="cart-page">
-            <h2>Cart</h2>
+            <h2>{t("cart_page_title")}</h2>
             <div className="products-list">
                 {productItems && (
                     productItems.map((item) => (
@@ -121,7 +127,7 @@ function Cart() {
                             <img src={`${item.image}`} alt={`${item.name}`} />
                         </div>
                         <div className="cart-item-info">
-                            <h3>{item.name}</h3>
+                            <h3>{t(item.name)}</h3>
                             <div className="cart-size-details">
                                 {
                                     Object.keys(item.selectedSize).map((sizeKey) => (
@@ -160,7 +166,7 @@ function Cart() {
             </div>
             <div className="additional-information">
                 <div className="cart-total">
-                    <span className="price-info-first">Total:</span>
+                    <span className="price-info-first">{t("cart_page_total")}:</span>
                     {!localStorage.getItem('token') ? (<span className="cart-total-amount">${totalAmount.toFixed(2)}</span>)
                     : ( 
                         <div style={{display:'flex', gap:'20px'}}>
@@ -172,11 +178,11 @@ function Cart() {
                 {
                     profile && (<>
                         <div className="add-info">
-                            <span className="add-info-first">Address</span>
+                            <span className="add-info-first">{t("cart_page_address")}</span>
                             <span className="add-info-second">{profile.street}</span>
                         </div>
                         <div className="add-info">
-                            <span className="add-info-first">Pay by:</span>
+                            <span className="add-info-first">{t("cart_page_payment_method")}</span>
                             <span className="add-info-second">{profile.paymentMethod}</span>
                         </div>
                     </>)
@@ -185,11 +191,11 @@ function Cart() {
             <div className="cart-actions-wrapper">
                 <div className="cart-actions">
                     {localStorage.getItem('token') ? (
-                        <button className="confirm-order-button" onClick={confirmOrder}>Confirm</button>
+                        <button className="confirm-order-button" onClick={confirmOrder}>{t("cart_page_confirm")}</button>
                     ):(
                         <>
-                            <button><Link to="/login" className="sign-in-button">Sign In</Link></button>
-                            <button><Link to="/registration" className="register-button">Registration</Link></button>
+                            <button><Link to="/login" className="sign-in-button">{t("cart_page_login")}</Link></button>
+                            <button><Link to="/registration" className="register-button">{t("cart_page_registration")}</Link></button>
                         </>
                     )}
                 </div>

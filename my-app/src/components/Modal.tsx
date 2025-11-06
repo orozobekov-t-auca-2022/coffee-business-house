@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "../types/product"
 import { showLoader } from "./showLoader";
 import { showNotification } from "./showNotification";
 import type { Additive } from "../types/cart";
 import type { ModalProps, ModalTooltip } from "../types/modal";
+import { useTranslation } from "react-i18next";
 
 function Modal({ obj, image, onClose }: ModalProps) {
     const [product, setProduct] = useState<Product>();
@@ -19,6 +20,7 @@ function Modal({ obj, image, onClose }: ModalProps) {
         x: 0,
         y: 0
     });
+    const {t} = useTranslation();
 
     useEffect(() => {
         async function fetchProduct() {
@@ -134,9 +136,9 @@ function Modal({ obj, image, onClose }: ModalProps) {
             <div className="modal-content">
                 <img src={`${image}`} alt=""/>
                 <div className="modal-text">
-                    <h3>{product!['name']}</h3>
-                    <p>{product!['description']}</p>
-                    <label>Size</label>
+                    <h3>{t(product!['name'])}</h3>
+                    <p>{t(`${product!['name']} description`)}</p>
+                    <label>{t("size")}</label>
                     <div className="sizes">
                         {
                             Object.keys(product!['sizes']).map((sizeKey, index) => {
@@ -148,19 +150,19 @@ function Modal({ obj, image, onClose }: ModalProps) {
                             })
                         }
                     </div>
-                    <label>Additives</label>
+                    <label>{t("additives")}</label>
                     <div className="additives">
                         {
                             product!['additives'].map((additive, key) => {
                                 return <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)} onMouseEnter={(e) => {handleMouseEnter(e, {price: additive.price, discountPrice: additive.discountPrice}); setCurrentHoveredAdditive(key)}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredAdditive(undefined)}}>
                                     <span className="additInd">{key}</span>
-                                    <span>{additive.name}</span>
+                                    <span>{t(additive.name)}</span>
                                 </button>
                             })
                         }
                     </div>
                     <div className="modal-price">
-                        <h3>Total:</h3>
+                        <h3>{t("total")}:</h3>
                         {
                             (localStorage.getItem('token') && totalPriceWithDiscount < totalPrice) ? (
                                 <div style={{display:'flex', gap: '20px'}}>
@@ -182,7 +184,7 @@ function Modal({ obj, image, onClose }: ModalProps) {
                             onClose();
                             addToCart();
                         }
-                    }>Add to Cart</button>
+                    }>{t('add_to_cart')}</button>
                 </div>
                 <button className="close-modal-button" onClick={onClose}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">

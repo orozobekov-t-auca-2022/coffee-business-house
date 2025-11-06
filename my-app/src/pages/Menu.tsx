@@ -5,12 +5,14 @@ import { coffeeImages } from "../imageDictionaries/coffeeImages";
 import { teaImages } from "../imageDictionaries/teaImages";
 import { dessertsImages } from "../imageDictionaries/dessertsImages";
 import Modal from "../components/Modal";
+import { useTranslation } from "react-i18next";
 
 function Menu() {
     const [currentCategory, setCurrentCategory] = useState<Categories>(Categories.Coffee);
     const [products, setProducts] = useState<Product[]>([]);
     const [currentProductImages, setCurrentProductImages] = useState<Record<string, string>>({});
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         async function fetchProducts() {
@@ -36,21 +38,21 @@ function Menu() {
     return <>
         <section className="product-list">
             <div className="product-list-container">
-                <h1 className="menu-h1">Behind each of our cups hides an <span style={{color: "rgba(176, 144, 122, 1)", fontStyle: "italic"}}> amazing surprise</span></h1>
+                <h1 className="menu-h1">{t("menu_page_title_behind_each")}<span style={{color: "rgba(176, 144, 122, 1)", fontStyle: "italic"}}> {t("menu_page_title_amazing_surprise")}</span></h1>
             </div>    
             <div className="product-list-container">
                 <div className="product-options">    
                     <button id="coffee-btn" className={currentCategory === Categories.Coffee ? "active" : ""} onClick={() => setCurrentCategory(Categories.Coffee)}>
                         <span className="product-icon">☕</span>
-                        <span>Coffee</span>
+                        <span>{t("menu_page_filter_coffee")}</span>
                     </button>
                     <button id="tea-btn" className={currentCategory === Categories.Tea ? "active" : ""} onClick={() => setCurrentCategory(Categories.Tea)}>
                         <span className="product-icon">🫖</span>
-                        <span>Tea</span>
+                        <span>{t("menu_page_filter_tea")}</span>
                     </button>
                     <button id="dessert-btn" className={currentCategory === Categories.Dessert ? "active" : ""} onClick={() => setCurrentCategory(Categories.Dessert)}>
                         <span className="product-icon">🍰</span>
-                        <span>Dessert</span>
+                        <span>{t("menu_page_filter_dessert")}</span>
                     </button>
                 </div>
             </div>
@@ -68,8 +70,8 @@ function Menu() {
                         </div>
                         <div className="menu-item-text">
                             <div className="menu-item-title">
-                                <h3>{product.name}</h3>
-                                <p>{product.description}</p>
+                                <h3>{t(product.name)}</h3>
+                                <p>{t(`${product!['name']} description`)}</p>
                             </div>
                             <div className="menu-item-price">
                                 {localStorage.getItem("token") && product.discountPrice ? (

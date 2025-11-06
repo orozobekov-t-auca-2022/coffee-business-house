@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { LoginData } from "../types/login";
 import { loginService } from "../services/loginService";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function Login() {
     const [loginData, setLoginData] = useState<LoginData>({
@@ -10,6 +11,7 @@ function Login() {
     });
     const [errors, setErrors] = useState<Record<string, string>>({});
     const navigate = useNavigate();
+    const {t} = useTranslation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
@@ -56,22 +58,22 @@ function Login() {
 
     return <>
         <div className="login-page">
-            <h2>Sign In</h2>
+            <h2>{t("login_page_title_sign_in")}</h2>
             <form className="login-form" onSubmit={handleSubmit}>
                 <div className="login-input-wrapper">
                     <div className="input-group">
-                        <label htmlFor="login">Login</label>
+                        <label htmlFor="login">{t("login_page_input_login")}</label>
                         <input type="text" id="login" placeholder="Placeholder" onChange={handleChange} name="login" required />
                         {errors.login && <span className="error-message">{errors.login}</span>}
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Password</label>
+                        <label htmlFor="password">{t("login_page_input_password")}</label>
                         <input type="password" id="password" placeholder="Placeholder" onChange={handleChange} name="password" required />
                         {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
                 </div>
-                <button type="submit">Sign In</button>
+                <button type="submit">{t("login_page_button_sign_in")}</button>
             </form>
         </div>
     </>

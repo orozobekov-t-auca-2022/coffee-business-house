@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../provider/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 function Header() {
     const [itemsInCart, setItemsInCart] = useState<number>(0);
@@ -9,6 +10,7 @@ function Header() {
     }, [])
 
     const {theme, toggleTheme} = useContext(ThemeContext);
+    const {t, i18n} = useTranslation();
 
     return <>
         <header>
@@ -31,11 +33,17 @@ function Header() {
                 </li>
                 <li className="nav-links">
                     <ul>
-                        <li><Link to="#favorite-coffee">Favorite coffee</Link></li>
-                        <li><Link to="#about">About</Link></li>
-                        <li><Link to="#mobile-app">Mobile app</Link></li>
-                        <li><Link to="#contact-us">Contact us</Link></li>
+                        <li><Link to="#favorite-coffee">{t("navigation_favorite")}</Link></li>
+                        <li><Link to="#about">{t("navigation_about")}</Link></li>
+                        <li><Link to="#mobile-app">{t("navigation_mobile_app")}</Link></li>
+                        <li><Link to="#contact-us">{t("navigation_contact_us")}</Link></li>
                     </ul>
+                </li>
+                <li className="nav_localization">
+                    <select className="language_selector" value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)}>
+                        <option value="en">EN</option>
+                        <option value="ru">RU</option>
+                    </select>
                 </li>
                 <li className="themeChanger">
                     <button onClick={() => {
@@ -67,7 +75,7 @@ function Header() {
                         ) : (<></>)
                     }
                     <li className="nav-menu">
-                        <Link to="/menu">Menu</Link>
+                        <Link to="/menu">{t("navigation_menu")}</Link>
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M14.167 9.76667V11.6667C14.167 14.8883 11.5553 17.5 8.33366 17.5C5.112 17.5 2.50033 14.8883 2.50033 11.6667V9.76667C2.50033 9.4353 2.76896 9.16667 3.10033 9.16667H13.567C13.8984 9.16667 14.167 9.4353 14.167 9.76667Z" stroke={theme === 'dark' ? 'rgba(225, 212, 201, 1)' : '#403F3D'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                             <path d="M10.0003 7.50008C10.0003 6.66675 10.5956 5.83341 11.786 5.83341C13.101 5.83341 14.167 4.76743 14.167 3.45246V2.91675" stroke={theme === 'dark' ? 'rgba(225, 212, 201, 1)' : '#403F3D'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>

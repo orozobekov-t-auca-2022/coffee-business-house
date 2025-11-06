@@ -6,6 +6,7 @@ import Login from "./pages/Login"
 import Registration from "./pages/Registration"
 import Header from "./components/Header"
 import Footer from "./components/Footer"
+import './provider/i18n';
 
 function App() {
   return (
