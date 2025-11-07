@@ -11,6 +11,7 @@ import { coffeeImages } from '../imageDictionaries/coffeeImages'
 import type { Product } from '../types/product'
 import { ThemeContext } from '../provider/ThemeContext'
 import { useTranslation } from 'react-i18next'
+import FeedbackIcon from '../components/FeedbackIcon'
 
 
 function Main() {
@@ -201,6 +202,7 @@ function Main() {
             </div>
         </section>
     </main>
+    <FeedbackIcon/>
     </>
 }
 

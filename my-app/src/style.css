@@ -1286,7 +1286,103 @@ input[type=number]::-webkit-outer-spin-button {
     text-decoration: none;
     color: var(--dark-text);
 }
+.feedback-icon{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--container-background);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    text-decoration: none;
+    color: var(--light-text);
+}
 
+.starsContainer{
+    display: flex;
+}
+
+.star{
+    cursor: pointer;
+    transition: all 0.1s linear;
+}
+
+.star:hover{
+    transform: scale(1.1);
+}
+
+.feedback-form{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    width: 100%
+}
+.feedback-form input {
+    all: unset;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    width: 100%;
+    height: 56px;
+    padding: 12px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 150%;
+    color: var(--dark-text);
+}
+.feedback-form textarea{
+    all: unset;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    width: 100%;
+    height: 120px;
+    padding: 12px;
+    box-sizing: border-box;
+    font-size: 16px;
+    line-height: 150%;
+    color: var(--dark-text);
+    margin-top: 20px;
+}
+.feedback-form button{
+    all: unset;
+    border: 1px solid var(--container-background);
+    color: var(--dark-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 44px;
+    border-radius: 100px;
+    margin-top: 20px;
+    cursor: pointer;
+}
+.feedback-input-group label{
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--dark-text);
+    display: block;
+    margin-bottom: 4px;
+}
+.feedback-page{
+    display: flex;
+    justify-content: center;
+    margin: 20px 0 100px 0;
+}
+.feedback-input-group{
+    width: 100%;
+}
+.feedback-container h2{
+    margin-bottom: 20px;
+}
+.feedback-container p{
+    margin-bottom: 40px;
+    color: var(--dark-text);
+}
 @media screen and (min-width: 1441px) {
     body{
         margin: 20px auto;
