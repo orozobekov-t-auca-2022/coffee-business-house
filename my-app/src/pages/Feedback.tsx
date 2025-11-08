@@ -5,41 +5,65 @@ import type { FeedbackProps } from "../types/feedback";
 import { useTranslation } from "react-i18next";
 
 function Feedback() {
-    const userRating = localStorage.getItem("userRating");
     const {t} = useTranslation()
 
-    const [feedback, setFeedback] = useState<FeedbackProps>({
-        userRating: userRating ? parseInt(userRating) : null,
+    const feedback : FeedbackProps = {
+        userRating: 0,
         userName: null,
         userFeedback: ""
-    });
+    };
     const [userName, setUserName] = useState<string>("");
     const [userFeedback, setUserFeedback] = useState<string>("");
-    const [rating, setRating] = useState<number | null>(userRating ? parseInt(userRating) : null);
+    const [rating, setRating] = useState<number | null>(null);
     const [disabledSubmit, setDisabledSubmit] = useState<boolean>(true);
+    const [feedbackError, setFeedbackError] = useState<string>("");
+    const [ratingError, setRatingError] = useState<string>("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        let valid = true;
+        if (rating === null) {
+            setRatingError(t('rating_error'));
+            valid = false;
+        } else {
+            setRatingError("");
+        }
+
+        if(userFeedback.trim().length === 0) {
+            setFeedbackError(t('feedback_error'));
+            valid = false;
+        } else {
+            setFeedbackError("");
+        }
+
+        if(!valid) return;
+
         feedback.userName = userName;
         feedback.userFeedback = userFeedback;
         feedback.userRating = rating;
         localStorage.setItem("userFeedbackData", JSON.stringify([...localStorage.getItem("userFeedbackData") ? JSON.parse(localStorage.getItem("userFeedbackData") || "") : [], feedback]));
-        console.log('Feedback Submitted:', feedback);
         showSuccess("Thank you for your feedback!");
         setUserName("");
         setUserFeedback("");
         setRating(null);
+    try { localStorage.removeItem("userRating"); } catch { /* ignore storage errors */ }
         setDisabledSubmit(true);
     }
 
     useEffect(() => {
-        if (userFeedback.trim().length > 0) {
+        if (userFeedback.trim().length > 0 && rating !== null && rating > 0) {
             setDisabledSubmit(false);
         } else {
             setDisabledSubmit(true);
         }
-    }, [userFeedback]);
+    }, [userFeedback, rating]);
 
+    useEffect(() => {
+        if (rating !== null && rating > 0) {
+            setRatingError("");
+        }
+    }, [rating]);
 
     return (
         <div className="feedback-page">
@@ -53,11 +77,13 @@ function Feedback() {
                     </div>
                     <div className="feedback-input-group">
                         <label htmlFor="">{t('rating')}</label>
-                        <Stars onChange={(newRating) => setRating(newRating)} />
+                        <Stars rating={rating ?? 0} onChange={(newRating) => setRating(newRating)} />
+                        {ratingError && <p className="error-text">{ratingError}</p>}
                     </div>
                     <div className="feedback-input-group">
                         <label htmlFor="">{t('your_feedback')}</label>
                         <textarea rows={4} cols={50} placeholder={t('feedback_placeholder')} value={userFeedback} onChange={(e) => setUserFeedback(e.target.value)}></textarea>
+                        {feedbackError && <p className="error-text">{feedbackError}</p>}
                     </div>
                     <button type="submit" disabled={disabledSubmit}>{t('submit')}</button>
                 </form>

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 
-const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const [theme, setTheme] = useState('light');
 
     const toggleTheme = () => {

@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from "react";
-import type { Product } from "../types/product"
 import type { Additive } from "../types/cart";
 import type { ModalProps, ModalTooltip } from "../types/modal";
 import { useTranslation } from "react-i18next";
 import { fetchProduct } from "../services/fetchProduct";
 import CartContext from "../context/CartContext";
+import type { ExtendedProduct } from "../types/api";
 
 function Modal({ obj, image, onClose }: ModalProps) {
-    const [product, setProduct] = useState<Product>();
+    const [product, setProduct] = useState<ExtendedProduct>();
     const [currentSize, setCurrentSize] = useState<string>("");
     const [currentHoveredSize, setCurrentHoveredSize] = useState<string>("");
     const [currentHoveredAdditive, setCurrentHoveredAdditive] = useState<number | undefined>();
@@ -54,9 +54,9 @@ function Modal({ obj, image, onClose }: ModalProps) {
     function calculateTotalPrice() {
         let price = 0;
         if (product) {
-            price += parseFloat(product.sizes[currentSize.toLowerCase()].price);
+            price += parseFloat(product.sizes[currentSize.toLowerCase()].price.toString());
             additives.forEach((additive) => {
-                price += parseFloat(additive.price);
+                price += parseFloat(additive.price.toString());
             });
         }
         setTotalPrice(price);
@@ -64,15 +64,16 @@ function Modal({ obj, image, onClose }: ModalProps) {
 
     function calculateTotalPriceWithDiscount() {
         let price = 0;
-        if(localStorage.getItem('token') && product && product.sizes[currentSize.toLowerCase()].discountPrice) {
-            price += parseFloat(product.sizes[currentSize.toLowerCase()].discountPrice);
-            additives.forEach((additive) => {
-                if(additive.discountPrice) {
-                    price += parseFloat(additive.discountPrice);
-                } else {
-                    price += parseFloat(additive.price);
-                }
-            });
+        if (localStorage.getItem('token') && product) {
+            const sizeInfo = product.sizes[currentSize.toLowerCase()];
+            if (sizeInfo) {
+                const sizePriceStr = sizeInfo.discountPrice?.toString() ?? sizeInfo.price.toString();
+                price += parseFloat(sizePriceStr);
+                additives.forEach((additive) => {
+                    const additivePriceStr = additive.discountPrice?.toString() ?? additive.price.toString();
+                    price += parseFloat(additivePriceStr);
+                });
+            }
         }
         setTotalPriceWithDiscount(price);
     }
@@ -81,7 +82,7 @@ function Modal({ obj, image, onClose }: ModalProps) {
         const rect = e.currentTarget.getBoundingClientRect();
         setToolTip({
             visible: true,
-            message: priceInfo,
+            message: JSON.stringify(priceInfo),
             x: rect.left + rect.width / 2,
             y: rect.top - 8,
         });
@@ -91,7 +92,8 @@ function Modal({ obj, image, onClose }: ModalProps) {
         setToolTip({...toolTip, visible: false });
     }
 
-    const { addItem } = useContext(CartContext);
+    const cartContext = useContext(CartContext);
+    const addItem = cartContext?.addItem ?? (() => {});
 
     function addToCart() {
         if (!product) return;
@@ -127,9 +129,9 @@ function Modal({ obj, image, onClose }: ModalProps) {
                     <label>{t("size")}</label>
                     <div className="sizes">
                         {
-                            Object.keys(product!['sizes']).map((sizeKey, index) => {
+                            Object.keys(product!['sizes']).map((sizeKey) => {
                                 const sizeInfo = product!.sizes[sizeKey];
-                                return <button className={`modal-text-option-btns ${currentSize === sizeKey ? 'active' : ''}`} data-size={sizeKey} key={sizeKey} onClick={() => changeSize(sizeKey)} onMouseEnter={(e) => {handleMouseEnter(e, { price: sizeInfo.price, discountPrice: sizeInfo.discountPrice}); setCurrentHoveredSize(sizeKey);}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredSize("");}}>
+                                return <button className={`modal-text-option-btns ${currentSize === sizeKey ? 'active' : ''}`} data-size={sizeKey} key={sizeKey} onClick={() => changeSize(sizeKey)} onMouseEnter={(e) => {handleMouseEnter(e, { price: sizeInfo.price.toString(), discountPrice: sizeInfo.discountPrice?.toString()}); setCurrentHoveredSize(sizeKey);}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredSize("");}}>
                                     <span className="size">{sizeKey.toUpperCase()}</span>
                                     <span>{product.sizes[sizeKey].size}</span>
                                 </button>
@@ -140,7 +142,7 @@ function Modal({ obj, image, onClose }: ModalProps) {
                     <div className="additives">
                         {
                             product!['additives'].map((additive, key) => {
-                                return <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)} onMouseEnter={(e) => {handleMouseEnter(e, {price: additive.price, discountPrice: additive.discountPrice}); setCurrentHoveredAdditive(key)}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredAdditive(undefined)}}>
+                                return <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)} onMouseEnter={(e) => {handleMouseEnter(e, {price: additive.price.toString(), discountPrice: additive.discountPrice?.toString()}); setCurrentHoveredAdditive(key)}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredAdditive(undefined)}}>
                                     <span className="additInd">{key}</span>
                                     <span>{t(additive.name)}</span>
                                 </button>

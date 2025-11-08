@@ -33,12 +33,14 @@ function Cart() {
     const [totalAmount, setTotalAmount] = useState<number>(0);
     const [totalAmountWithDiscount, setTotalAmountWithDiscount] = useState<number>(0);
     const [profile, setProfile] = useState<Profile | null>(null);
-    const [formData, setFormData] = useState<Order>({
+    const formData: Order = {
         items: [],
         totalPrice: 0
-    });
+    };
     const {t} = useTranslation();
-    const {removeItem, removeAllItems} = useContext(CartContext);
+    const cartContext = useContext(CartContext);
+    const removeItem = cartContext?.removeItem ?? (() => {});
+    const removeAllItems = cartContext?.removeAllItems ?? (() => {});
 
     useEffect(() => {
         const storedCartItems = localStorage.getItem("cartItems");
@@ -152,7 +154,7 @@ function Cart() {
                                         
                                         return (
                                             <>
-                                                <span key={additiveKey}> {item.selectedAdditives[additiveKey].name}</span>
+                                                <span key={additiveKey}> {item.selectedAdditives[Number(additiveKey)].name}</span>
                                                 {(index !== item.selectedAdditives.length - 1) && (<span>,</span>)}
                                             </>
                                         )
@@ -165,8 +167,8 @@ function Cart() {
                             {
                                 (item.price !== item.discountPrice) ? (
                                     <>
-                                        <h3 className="strikethrough">${parseFloat(item!.finalPrice).toFixed(2)}</h3>
-                                        <h3>${parseFloat(item!.discountPrice.toString()).toFixed(2)}</h3>
+                                        <h3 className="strikethrough">${parseFloat(item!.finalPrice.toString()).toFixed(2)}</h3>
+                                        <h3>${parseFloat(item!.discountPrice!.toString()).toFixed(2)}</h3>
                                     </>
                                 ) : (
                                     <h3>${parseFloat(item!.finalPrice.toString()).toFixed(2)}</h3>

@@ -3,13 +3,18 @@ import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import CartContext from "../context/CartContext";
+import { SideBarContext } from "../context/SideBarProvider";
 
 function Header() {
     const { count } = useContext(CartContext);
+    const side = useContext(SideBarContext);
+    const toggleSidebar = side?.toggleSidebar ?? (()=>{});
+    const sidebarOpen = side?.sidebarOpen ?? false;
 
     const {theme, toggleTheme} = useContext(ThemeContext);
     const {t, i18n} = useTranslation();
 
+    console.log(sidebarOpen)
     return <>
         <header>
         <nav>
@@ -20,7 +25,7 @@ function Header() {
                     </Link>
                 </li>
                 <li>
-                    <div className="burgerBtns">
+                    <div className={`burgerBtns ${sidebarOpen ? ' activeBurger' : ''}`} onClick={() => {console.log('clicked'); toggleSidebar();}}>
                         <svg className="upperLine" width="18" height="2" viewBox="0 0 18 2" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M1 1H17" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
@@ -37,19 +42,18 @@ function Header() {
                         <li><Link to="#contact-us">{t("navigation_contact_us")}</Link></li>
                     </ul>
                 </li>
-                <li className="nav_localization">
-                    <select
-                        value={i18n.language}
-                        onChange={(e) => i18n.changeLanguage(e.target.value)}
-                        >
-                        <option value="en">EN</option>
-                        <option value="ru">RU</option>
-                    </select>
-                </li>
-                <li className="themeChanger">
-                    <button onClick={() => {
-                        toggleTheme()
-                    }}>
+                <ul className="modPanel">
+                    <li className="nav_localization">
+                        <select
+                            value={i18n.language}
+                            onChange={(e) => i18n.changeLanguage(e.target.value)}
+                            >
+                            <option value="en">EN</option>
+                            <option value="ru">RU</option>
+                        </select>
+                    </li>
+                    <li className="themeChanger">
+                        <button onClick={() => {toggleTheme()}}>
                         {
                             (theme === 'dark') ? (
                                 <span className="material-symbols-outlined" style={{color: "rgba(225, 212, 201, 1)"}}>
@@ -61,9 +65,8 @@ function Header() {
                                 </span>
                             )
                         }
-                    </button>
-                </li>
-                <ul className="cartAndMenu">
+                        </button>
+                    </li>
                     {
                         <Link to={"/cart"} className="cartDisplay">
                             <svg className="cart-logo" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -169,5 +169,8 @@
     "rating": "Rating:",
     "your_feedback": "Your Feedback about our services:",
     "feedback_placeholder": "Write any feedback that can help us be better",
-    "submit": "Submit"
+    "submit": "Submit",
+
+    "anonymous": "Anonymous",
+    "dashboard_title": "Admin Dashboard"
 }

@@ -40,14 +40,14 @@ function Dashboard() {
 
     
     return <>
-        <h2 className="dashboard-title"></h2>
+        <h2 className="dashboard-title">{t('dashboard_title')}</h2>
         <div className="dashboard">
         <div className="dashboard-container">
             <div className="feedback-reviews">
                 <div className="stats">
                     <div className="stat-card">
                         <h3>{t('feedback_reviews')}</h3>
-                        <p>{t('overall_rating')}: {averageRating} ★</p>
+                        <p>{t('overall_rating')}: {averageRating} <span style={{color: 'yellow'}}>★</span></p>
                     </div>
                     <div className="stat-card">
                         <h4>{t('total_feedbacks')}</h4>
@@ -63,7 +63,7 @@ function Dashboard() {
                             feedbacks.map((feedback, index) => (
                                 <div key={index} className="feedback-item">
                                     <div className="feedback-header">
-                                        <h4>{feedback.userName || "Anonymous"}</h4>
+                                        <h4>{feedback.userName || t('anonymous')}</h4>
                                         <p style={{color: feedback.userRating !== null ? 'yellow': '', fontSize: '24px'}}>{feedback.userRating !== null ? Array(feedback.userRating).fill("★").join("") : "No Rating"}</p>
                                     </div>
                                     <p>{feedback.userFeedback}</p>
@@ -82,7 +82,7 @@ function Dashboard() {
                 </div>
                 <div className="stat-card">
                     <h3>{t('overall')}</h3>
-                    <p>{orders.reduce((acc, curr) => acc + curr.totalPrice, 0).toFixed(2)}</p>
+                    <p>${orders.reduce((acc, curr) => acc + curr.totalPrice, 0).toFixed(2)}</p>
                 </div>
             </div>
             <div className="orders-list">

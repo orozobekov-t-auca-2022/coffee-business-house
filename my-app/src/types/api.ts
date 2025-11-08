@@ -10,9 +10,19 @@ export interface Product {
     id: number;
     name: string;
     description: string;
-    price: number;
-    discountPrice: number;
+    price: number | string;
+    discountPrice: number | string | null;
     category: Categories
 }
 
+export interface ExtendedProduct extends Product {
+    sizes: Record<string, {
+        size: string;
+        price: number | string;
+        discountPrice?: number | string | null;
+    }>;
+    additives: Array<{ name: string; price: number | string; discountPrice?: number | string | null }>;
+}
+
 export type ProductsResponse = ApiResponse<Product[]>;
+export type ExtendedProductsResponse = ApiResponse<ExtendedProduct[]>;

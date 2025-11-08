@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 
 type CartContextValue = {
     count: number;
@@ -7,10 +7,23 @@ type CartContextValue = {
     removeAllItems: () => void;
 };
 
-const CartContext = createContext<CartContextValue | undefined>(undefined);
+const CartContext = createContext<CartContextValue>({
+    count: 0,
+    addItem: () => {},
+    removeItem: () => {},
+    removeAllItems: () => {},
+});
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [items, setItems] = useState<number>(0);
+
+    useEffect(() => {
+        const storedItems = JSON.parse(localStorage.getItem("cartItems") || "0");
+        if (storedItems) {
+            setItems(storedItems.length);
+        }
+    },[])
+
     const addItem = () => {
         setItems((prev) => prev + 1);
     };

@@ -18,8 +18,8 @@ export interface SizeOption {
 
 export interface Additive {
     name: string;
-    price: string;
-    discountPrice?: string | null;
+    price: string | number;
+    discountPrice?: string | number | null;
 }
 
 export interface CartItem {
