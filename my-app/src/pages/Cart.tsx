@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { type Profile, type CartItem, type Order, type Product as OrderProduct } from "../types/cart";
 import { Link } from "react-router-dom";
 import fetchDataForCart from "../services/fetchDataForCart";
 import { useTranslation } from "react-i18next";
 import { showNotification } from "../components/showNotification";
+import CartContext from "../context/CartContext";
 
 export async function fetchProfileData() {
     try {
@@ -37,6 +38,7 @@ function Cart() {
         totalPrice: 0
     });
     const {t} = useTranslation();
+    const {removeItem, removeAllItems} = useContext(CartContext);
 
     useEffect(() => {
         const storedCartItems = localStorage.getItem("cartItems");
@@ -70,11 +72,13 @@ function Cart() {
         const updatedCartItems = productItems.filter((item) => item !== itemToRemove);
         setProductItems(updatedCartItems);
         localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+        removeItem();
     }
 
     function confirmOrder() {
         const combinedItems: OrderProduct[] = [];
 
+        console.log(productItems)
         productItems.forEach((cartItem) => {
             const size = Object.keys(cartItem.selectedSize)[0];
             const additives = cartItem.selectedAdditives.map(additive => additive.name);
@@ -97,14 +101,23 @@ function Cart() {
                 })
             }
         })
-        setFormData({
-            items: combinedItems,
-            totalPrice: totalAmountWithDiscount
-        })
+        console.log(combinedItems)
+        
+        formData.items = combinedItems;
+        formData.totalPrice = totalAmountWithDiscount
         try {
             fetchDataForCart(formData);
-            localStorage.removeItem("cartItems");
-            setProductItems([]);
+            if(localStorage.getItem('token')){
+                const existingOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+                const updatedOrders = [...existingOrders, formData];
+                console.log(formData)
+                console.log(updatedOrders);
+                
+                localStorage.setItem('orders', JSON.stringify(updatedOrders));
+                localStorage.removeItem("cartItems");
+                setProductItems([]);
+                removeAllItems();
+            }
         } catch (error) {
             console.error('Error confirming order:', error);
         }

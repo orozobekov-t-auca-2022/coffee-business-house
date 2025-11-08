@@ -8,6 +8,7 @@ import Header from "./components/Header"
 import Footer from "./components/Footer"
 import './provider/i18n';
 import Feedback from "./pages/Feedback"
+import Dashboard from "./pages/Dashboard"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/login" element={<Login/>} />
             <Route path="/registration" element={<Registration/>} />
             <Route path="/feedback" element={<Feedback/>} />
+            <Route path="/dashboard" element={<Dashboard/>} />
         </Routes>
         <Footer/>
     </>

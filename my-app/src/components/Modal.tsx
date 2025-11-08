@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import type { Product } from "../types/product"
-import { showLoader } from "./showLoader";
-import { showNotification } from "./showNotification";
 import type { Additive } from "../types/cart";
 import type { ModalProps, ModalTooltip } from "../types/modal";
 import { useTranslation } from "react-i18next";
+import { fetchProduct } from "../services/fetchProduct";
+import CartContext from "../context/CartContext";
 
 function Modal({ obj, image, onClose }: ModalProps) {
     const [product, setProduct] = useState<Product>();
@@ -23,24 +23,7 @@ function Modal({ obj, image, onClose }: ModalProps) {
     const {t} = useTranslation();
 
     useEffect(() => {
-        async function fetchProduct() {
-            try {
-                showLoader(true);
-                const response = await fetch(`${import.meta.env.VITE_COFFEE_API_KEY}/products/${obj.id}`);
-                if (!response.ok) {
-                    showNotification("Something went wrong, try again");
-                    onClose();
-                }
-                const data = await response.json();
-                setProduct(data.data);
-                setCurrentSize(Object.keys(data.data.sizes)[0]);
-            } catch (error) {
-                console.error("Error fetching product data:", error);
-            } finally {
-                showLoader(false);
-            }
-        }
-        fetchProduct();
+        fetchProduct(onClose, setProduct, setCurrentSize, obj);
     },[])
     
     useEffect(() => {
@@ -108,23 +91,26 @@ function Modal({ obj, image, onClose }: ModalProps) {
         setToolTip({...toolTip, visible: false });
     }
 
+    const { addItem } = useContext(CartContext);
+
     function addToCart() {
         if (!product) return;
         const formData = {
             ...product,
-            'image': image,
-            'selectedSize': {
+            image,
+            selectedSize: {
                 [currentSize]: product!.sizes[currentSize.toLowerCase()]
             },
-            'finalPrice': totalPrice,
-            'selectedAdditives': additives,
-            'discountPrice': localStorage.getItem('token') ? totalPriceWithDiscount : totalPrice
+            finalPrice: totalPrice,
+            selectedAdditives: additives,
+            discountPrice: localStorage.getItem('token') ? totalPriceWithDiscount : totalPrice
         }
         if(localStorage.getItem('cartItems')){
             localStorage.setItem('cartItems', JSON.stringify([...JSON.parse(localStorage.getItem('cartItems') as string), formData]));
         } else {
             localStorage.setItem('cartItems', JSON.stringify([formData]));
         }
+        addItem()
     }
 
     if(!product) {

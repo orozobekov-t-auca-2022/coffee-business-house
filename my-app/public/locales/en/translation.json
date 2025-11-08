@@ -145,5 +145,29 @@
     "Lemon": "Lemon",
     "Berries": "Berries",
     "Nuts": "Nuts",
-    "Jam": "Jam"
+    "Jam": "Jam",
+
+    "stats_page_title_your_statistics": "Statistics on the most popular products",
+    "admin_dashboard_page_title": "Admin Dashboard Page",
+    "feedback_reviews": "Feedback & Reviews",
+    "overall_rating": "Overall Rating",
+    "total_feedbacks": "Total Feedbacks",
+    "no_feedback": "no feedback",
+    "recent_feedbacks": "Recent Feedbacks",
+
+    "orders": "Orders",
+    "total_orders": "Total Orders",
+    "overall": "Overall",
+    "order": "Order",
+    "total_price": "Total Price",
+    "no_orders": "No orders",
+
+    "feedback_page": "Feedback Page",
+    "feedback_page_description": "Dear customer, we value any feedback, suggestion or complaint you may have. We always strive to improve our services.",
+    "name": "Name(Optional):",
+    "name_placeholder": "Write your name",
+    "rating": "Rating:",
+    "your_feedback": "Your Feedback about our services:",
+    "feedback_placeholder": "Write any feedback that can help us be better",
+    "submit": "Submit"
 }

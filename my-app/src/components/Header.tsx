@@ -1,13 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { ThemeContext } from "../provider/ThemeContext";
+import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
+import CartContext from "../context/CartContext";
 
 function Header() {
-    const [itemsInCart, setItemsInCart] = useState<number>(0);
-    useEffect(() => {
-        setItemsInCart(Number(JSON.parse(localStorage.getItem('cartItems') || '[]').length));
-    }, [])
+    const { count } = useContext(CartContext);
 
     const {theme, toggleTheme} = useContext(ThemeContext);
     const {t, i18n} = useTranslation();
@@ -40,7 +38,10 @@ function Header() {
                     </ul>
                 </li>
                 <li className="nav_localization">
-                    <select className="language_selector" value={i18n.language} onChange={(e) => i18n.changeLanguage(e.target.value)}>
+                    <select
+                        value={i18n.language}
+                        onChange={(e) => i18n.changeLanguage(e.target.value)}
+                        >
                         <option value="en">EN</option>
                         <option value="ru">RU</option>
                     </select>
@@ -64,15 +65,13 @@ function Header() {
                 </li>
                 <ul className="cartAndMenu">
                     {
-                        (localStorage.getItem('token')) ? (
                         <Link to={"/cart"} className="cartDisplay">
                             <svg className="cart-logo" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M16.0942 8.36255L17.1455 15.1959C17.3319 16.4074 16.3945 17.5 15.1688 17.5H4.83122C3.60545 17.5 2.66809 16.4074 2.85448 15.1959L3.90576 8.36255C4.05586 7.38689 4.89536 6.66667 5.88251 6.66667H14.1175C15.1046 6.66667 15.9441 7.38689 16.0942 8.36255Z" stroke={theme === 'dark' ? 'rgba(225, 212, 201, 1)' : '#403F3D'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                                 <path d="M11.6663 4.16667C11.6663 3.24619 10.9201 2.5 9.99967 2.5C9.0792 2.5 8.33301 3.24619 8.33301 4.16667" stroke={theme === 'dark' ? 'rgba(225, 212, 201, 1)' : '#403F3D'}  strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                             </svg>
-                            <span className="productsAmount">{itemsInCart}</span>
+                            <span className="productsAmount">{count}</span>
                         </Link>
-                        ) : (<></>)
                     }
                     <li className="nav-menu">
                         <Link to="/menu">{t("navigation_menu")}</Link>

@@ -9,7 +9,7 @@ import { showLoader } from '../components/showLoader'
 import { favoritesService } from '../services/favoritesService'
 import { coffeeImages } from '../imageDictionaries/coffeeImages'
 import type { Product } from '../types/product'
-import { ThemeContext } from '../provider/ThemeContext'
+import { ThemeContext } from '../context/ThemeContext'
 import { useTranslation } from 'react-i18next'
 import FeedbackIcon from '../components/FeedbackIcon'
 

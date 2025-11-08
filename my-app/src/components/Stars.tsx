@@ -10,7 +10,7 @@ interface StarsProps {
 
 const DEFAULT_COUNT = 5;
 const DEFAULT_RATING = 0;
-const DEFAULT_ICON = "⭐";
+const DEFAULT_ICON = "★";
 const DEFAULT_UNSELECTED_COLOR = "gray";
 const DEFAULT_COLOR = "gold";
 const DEFAULT_ICON_SIZE = "40px";
