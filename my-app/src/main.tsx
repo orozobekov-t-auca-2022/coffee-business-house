@@ -6,11 +6,10 @@ import ThemeProvider from './provider/ThemeProvider'
 import { CartProvider } from './context/CartContext'
 import { SideBarProvider } from './context/SideBarProvider.tsx'
 
-const basename = import.meta.env.BASE_URL || '/'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  // <React.StrictMode>
-    <BrowserRouter basename={basename}>
+  <React.StrictMode>
+    <BrowserRouter>
       <ThemeProvider>
         <CartProvider>
           <SideBarProvider>
@@ -19,5 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         </CartProvider>
       </ThemeProvider>
     </BrowserRouter>
-  // </React.StrictMode>,
+  </React.StrictMode>,
 )

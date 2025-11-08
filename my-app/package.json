@@ -1,6 +1,6 @@
 {
   "name": "my-app",
-  "homepage": "https://rolling-scopes-school.github.io/orozobekov-t-auca-2022-JSFEQS2025Q3/",
+  "homepage": "https://orozobekov-t-auca-2022.github.io/coffee-business-house/",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,7 +10,7 @@
     "postbuild": "node ./scripts/copy-index-to-404.js",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -r https://github.com/orozobekov-t-auca-2022/coffee-business-house.git"
   },
   "devDependencies": {
     "@eslint/js": "^9.38.0",
