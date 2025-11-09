@@ -17,7 +17,7 @@ export function Sidebar() {
     return (
         <div className={`sidebar-wrapper ${sidebarOpen ? 'open' : ''}`}>
         <div className={`mobileSidebar ${sidebarOpen ? 'open' : ''}`}>
-            <li className="nav-links">
+            <li className="sidebar-nav-links">
                 <ul>
                     <li><Link to="#favorite-coffee" onClick={() => closeSidebar()}>{t("navigation_favorite")}</Link></li>
                     <li><Link to="#about" onClick={() => closeSidebar()}>{t("navigation_about")}</Link></li>
@@ -25,7 +25,7 @@ export function Sidebar() {
                     <li><Link to="#contact-us" onClick={() => closeSidebar()}>{t("navigation_contact_us")}</Link></li>
                 </ul>
             </li>
-            <ul className="modPanel">
+            <ul className="sidebar-modPanel">
                 <li className="nav_localization">
                     <select
                         value={i18n.language}

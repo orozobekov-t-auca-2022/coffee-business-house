@@ -2,7 +2,15 @@ import { useEffect, useState, type ReactNode } from "react";
 import { ThemeContext } from "../context/ThemeContext";
 
 const ThemeProvider = ({ children }: { children: ReactNode }) => {
-    const [theme, setTheme] = useState('light');
+    const [theme, setTheme] = useState(() => {
+        try {
+            const stored = localStorage.getItem('theme');
+            if (stored === 'dark' || stored === 'light') return stored;
+        } catch (e){
+            console.log(e)
+        }
+        return 'light';
+    });
 
     const toggleTheme = () => {
         setTheme(prev => {

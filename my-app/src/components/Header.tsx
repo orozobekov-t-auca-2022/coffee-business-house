@@ -25,12 +25,12 @@ function Header() {
                     </Link>
                 </li>
                 <li>
-                    <div className={`burgerBtns ${sidebarOpen ? ' activeBurger' : ''}`} onClick={() => {console.log('clicked'); toggleSidebar();}}>
+                    <div className={`burgerBtns ${sidebarOpen ? ' activeBurger' : ''}`} onClick={() => {toggleSidebar();}}>
                         <svg className="upperLine" width="18" height="2" viewBox="0 0 18 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1H17" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M1 1H17" stroke={localStorage.getItem('theme') === 'light' ? `#403F3D` : `rgba(225, 212, 201, 1)`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         <svg className="lowerLine" width="18" height="2" viewBox="0 0 18 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1 1H17" stroke="#403F3D" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M1 1H17" stroke={localStorage.getItem('theme') === 'light' ? `#403F3D` : `rgba(225, 212, 201, 1)`} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                     </div>
                 </li>

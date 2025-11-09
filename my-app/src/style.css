@@ -83,7 +83,6 @@ li a span{
     color: rgba(225, 212, 201, 1);
 }
 .nav-menu{
-    width: 72px;
     height: 28px;
     display: flex;
     align-items: center;
@@ -169,7 +168,6 @@ h1{
 }
 #favorite-coffee{
     margin-top: 100px;
-    height: 799px;
 }
 h2{
     width: 100%;
@@ -250,6 +248,7 @@ h2{
     display: flex;
     justify-content: center;
     height: 4px;
+    margin-top: 40px;
 }
 .sliders{
     display: flex;
@@ -769,11 +768,11 @@ footer{
     justify-content: center;
 }
 .cartDisplay{
-    width: 38px;
     display: flex;
     justify-content: space-between;
     cursor:pointer;
     text-decoration: none;
+    gap: 8px;
 }
 .modPanel{
     display: flex;
@@ -1458,6 +1457,28 @@ input[type=number]::-webkit-outer-spin-button {
 .barChart h3{
     color: var(--dark-text);
 }
+.feedback-tooltip{
+    position: fixed;
+    bottom: 100px;
+    right: 50px;
+    background-color:var(--light-text);
+    color: var(--dark-text);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transform: translateY(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+}
+.feedback-tooltip.show {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
 @media screen and (min-width: 1441px) {
     body{
         margin: 20px auto;
@@ -1526,6 +1547,7 @@ input[type=number]::-webkit-outer-spin-button {
         overflow: hidden;
         z-index: 1000;
         transition: width 0.4s ease-in-out;
+        margin-top: 60px;
     }
     
     .sidebar-wrapper.open {
@@ -1541,6 +1563,9 @@ input[type=number]::-webkit-outer-spin-button {
         background-color: var(--light-text);
         color: var(--dark-text);
         transform: none;
+    }
+    .mobileSidebar.open.nav-links, .mobileSidebar.open.modPanel{
+        display: flex;
     }
     header{
         margin-bottom: 20px;
@@ -1603,6 +1628,39 @@ input[type=number]::-webkit-outer-spin-button {
         justify-content: center;
         width: 60px;
         height: 60px;
+    }
+    .sidebar-modPanel{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        margin-top: 60px;
+        font-size: 32px;
+    }
+    .nav_localization select{
+        font-size: 32px;
+    }
+    .themeChanger button span{
+        font-size: 32px;
+    }
+    .cartDisplay{
+        display: flex;
+        align-items: center;
+    }
+    .cartDisplay svg{
+        width: 32px;
+        height: 32px;
+    }
+    .productsAmount{
+        font-size: 32px;
+    }
+
+    .nav-menu a{
+        font-size: 32px !important;
+    }
+    .nav-menu svg{
+        width: 32px;
+        height: 32px;
     }
 }
 

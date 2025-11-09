@@ -9,10 +9,12 @@ import Footer from "./components/Footer"
 import './provider/i18n';
 import Feedback from "./pages/Feedback"
 import Dashboard from "./pages/Dashboard"
+import { Sidebar } from "./components/Sidebar"
 
 function App() {
   return (
     <>
+      <Sidebar />
         <Header/>
         <Routes>
             <Route path="/" element={<Main/>} />

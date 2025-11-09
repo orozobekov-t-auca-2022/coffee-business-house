@@ -1,12 +1,7 @@
 import { showLoader } from "../components/showLoader";
 import { showNotification } from "../components/showNotification";
 import type { Dispatch, SetStateAction } from "react";
-
-interface Product {
-    id: string;
-    sizes: Record<string, unknown>;
-    [key: string]: unknown;
-}
+import type { ExtendedProduct } from "../types/api";
 
 interface ApiResponse<T> {
     data: T;
@@ -14,9 +9,9 @@ interface ApiResponse<T> {
 
 export async function fetchProduct(
     onClose: () => void,
-    setProduct: Dispatch<SetStateAction<Product | null>>,
-    setCurrentSize: Dispatch<SetStateAction<string | undefined>>,
-    obj: { id: string }
+    setProduct: Dispatch<SetStateAction<ExtendedProduct | undefined>>,
+    setCurrentSize: Dispatch<SetStateAction<string>>,
+    obj: { id: number }
 ): Promise<void> {
     try {
         showLoader(true);
@@ -25,7 +20,7 @@ export async function fetchProduct(
                 showNotification("Something went wrong, try again");
                 onClose();
             }
-            const data = (await response.json()) as ApiResponse<Product>;
+            const data = (await response.json()) as ApiResponse<ExtendedProduct>;
         setProduct(data.data);
         setCurrentSize(Object.keys(data.data.sizes)[0]);
     } catch (error) {

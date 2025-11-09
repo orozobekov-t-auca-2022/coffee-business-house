@@ -16,7 +16,7 @@ function Registration() {
     })
     const [errors, setErrors] = useState<Record<string, string>>({})
     const [isFormValid, setIsFormValid] = useState<boolean>(false);
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
 
     const inputsToValidate = [
         { id: 'login', message: '⚠ Login must start with a letter, contain only English letters and be at least 3 characters long' },
