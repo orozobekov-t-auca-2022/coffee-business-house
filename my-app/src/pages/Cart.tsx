@@ -154,7 +154,7 @@ function Cart() {
                                         
                                         return (
                                             <>
-                                                <span key={additiveKey}> {item.selectedAdditives[Number(additiveKey)].name}</span>
+                                                <span key={additiveKey}> {t(item.selectedAdditives[Number(additiveKey)].name)}</span>
                                                 {(index !== item.selectedAdditives.length - 1) && (<span>,</span>)}
                                             </>
                                         )
@@ -198,7 +198,7 @@ function Cart() {
                         </div>
                         <div className="add-info">
                             <span className="add-info-first">{t("cart_page_payment_method")}</span>
-                            <span className="add-info-second">{profile.paymentMethod}</span>
+                            <span className="add-info-second">{t(profile.paymentMethod)}</span>
                         </div>
                     </>)
                 }

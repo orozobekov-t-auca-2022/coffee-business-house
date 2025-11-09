@@ -171,5 +171,10 @@
     "submit": "Отправить",
 
     "anonymous": "Анонимный пользователь",
-    "dashboard_title": "Панель управления"
+    "dashboard_title": "Панель управления",
+
+    "cart_page_address": "Адрес",
+    "cart_page_payment_method": "Способ оплаты",
+    "cash": "Наличные",
+    "card": "Карта"
 }

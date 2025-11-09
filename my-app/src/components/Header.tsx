@@ -4,6 +4,7 @@ import { ThemeContext } from "../context/ThemeContext";
 import { useTranslation } from "react-i18next";
 import CartContext from "../context/CartContext";
 import { SideBarContext } from "../context/SideBarProvider";
+import logoPhoto from "../../assests/logo.png";
 
 function Header() {
     const { count } = useContext(CartContext);
@@ -21,7 +22,7 @@ function Header() {
             <ul className="nav-list">
                 <li className="nav-list-home">
                     <Link to="/">
-                        <img className="nav-logo" src="./assests/logo.png" alt="" />
+                        <img className="nav-logo" src={logoPhoto} alt="" />
                     </Link>
                 </li>
                 <li>
