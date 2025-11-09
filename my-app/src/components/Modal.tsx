@@ -1,0 +1,215 @@
+import { useContext, useEffect, useState } from "react";
+import type { Additive } from "../types/cart";
+import type { ModalProps, ModalTooltip } from "../types/modal";
+import { useTranslation } from "react-i18next";
+import { fetchProduct } from "../services/fetchProduct";
+import CartContext from "../context/CartContext";
+import type { ExtendedProduct } from "../types/api";
+
+function Modal({ obj, image, onClose }: ModalProps) {
+    const [product, setProduct] = useState<ExtendedProduct>();
+    const [currentSize, setCurrentSize] = useState<string>("");
+    const [currentHoveredSize, setCurrentHoveredSize] = useState<string>("");
+    const [currentHoveredAdditive, setCurrentHoveredAdditive] = useState<number | undefined>();
+    const [additives, setAdditives] = useState<Array<Additive>>([]);
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+    const [totalPriceWithDiscount, setTotalPriceWithDiscount] = useState<number>(0);
+    const [toolTip, setToolTip] = useState<ModalTooltip>({
+        visible: false,
+        message: "",
+        x: 0,
+        y: 0
+    });
+    const {t} = useTranslation();
+
+    useEffect(() => {
+        fetchProduct(onClose, setProduct, setCurrentSize, obj);
+    },[])
+    
+    useEffect(() => {
+        calculateTotalPrice();
+        if(localStorage.getItem('token')){
+            calculateTotalPriceWithDiscount();
+        }
+    }, [currentSize, additives])
+
+    function handleBackgroundClick(e: React.MouseEvent<HTMLDivElement>) {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    }
+    function changeSize(size: string) {
+        setCurrentSize(size);
+    }
+    function addAdditive(additive: Additive) {
+        setAdditives((prevAdditives) => {
+            const exists = prevAdditives.find((item) => item.name === additive.name);
+            if (exists) {
+                return prevAdditives.filter((item) => item.name !== additive.name);
+            } else {
+                return [...prevAdditives, additive];
+            }
+        });
+    }
+    function calculateTotalPrice() {
+        let price = 0;
+        if (product) {
+            price += parseFloat(product.sizes[currentSize.toLowerCase()].price.toString());
+            additives.forEach((additive) => {
+                price += parseFloat(additive.price.toString());
+            });
+        }
+        setTotalPrice(price);
+    }
+
+    function calculateTotalPriceWithDiscount() {
+        let price = 0;
+        if (localStorage.getItem('token') && product) {
+            const sizeInfo = product.sizes[currentSize.toLowerCase()];
+            if (sizeInfo) {
+                const sizePriceStr = sizeInfo.discountPrice?.toString() ?? sizeInfo.price.toString();
+                price += parseFloat(sizePriceStr);
+                additives.forEach((additive) => {
+                    const additivePriceStr = additive.discountPrice?.toString() ?? additive.price.toString();
+                    price += parseFloat(additivePriceStr);
+                });
+            }
+        }
+        setTotalPriceWithDiscount(price);
+    }
+
+    function handleMouseEnter(e: React.MouseEvent<HTMLButtonElement>, priceInfo: { price: string; discountPrice?: string }) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        setToolTip({
+            visible: true,
+            message: JSON.stringify(priceInfo),
+            x: rect.left + rect.width / 2,
+            y: rect.top - 8,
+        });
+    }
+
+    function handleMouseLeave() {
+        setToolTip({...toolTip, visible: false });
+    }
+
+    const cartContext = useContext(CartContext);
+    const addItem = cartContext?.addItem ?? (() => {});
+
+    function addToCart() {
+        if (!product) return;
+        const formData = {
+            ...product,
+            image,
+            selectedSize: {
+                [currentSize]: product!.sizes[currentSize.toLowerCase()]
+            },
+            finalPrice: totalPrice,
+            selectedAdditives: additives,
+            discountPrice: localStorage.getItem('token') ? totalPriceWithDiscount : totalPrice
+        }
+        if(localStorage.getItem('cartItems')){
+            localStorage.setItem('cartItems', JSON.stringify([...JSON.parse(localStorage.getItem('cartItems') as string), formData]));
+        } else {
+            localStorage.setItem('cartItems', JSON.stringify([formData]));
+        }
+        addItem()
+    }
+
+    if(!product) {
+        return null;
+    }
+    return <>
+    {product ? (
+        <div className="modal" onClick={handleBackgroundClick}>
+            <div className="modal-content">
+                <img src={`${image}`} alt=""/>
+                <div className="modal-text">
+                    <h3>{t(product!['name'])}</h3>
+                    <p>{t(`${product!['name']} description`)}</p>
+                    <label>{t("size")}</label>
+                    <div className="sizes">
+                        {
+                            Object.keys(product!['sizes']).map((sizeKey) => {
+                                const sizeInfo = product!.sizes[sizeKey];
+                                return <button className={`modal-text-option-btns ${currentSize === sizeKey ? 'active' : ''}`} data-size={sizeKey} key={sizeKey} onClick={() => changeSize(sizeKey)} onMouseEnter={(e) => {handleMouseEnter(e, { price: sizeInfo.price.toString(), discountPrice: sizeInfo.discountPrice?.toString()}); setCurrentHoveredSize(sizeKey);}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredSize("");}}>
+                                    <span className="size">{sizeKey.toUpperCase()}</span>
+                                    <span>{product.sizes[sizeKey].size}</span>
+                                </button>
+                            })
+                        }
+                    </div>
+                    <label>{t("additives")}</label>
+                    <div className="additives">
+                        {
+                            product!['additives'].map((additive, key) => {
+                                return <button className={`modal-text-option-btns ${additives.find((item) => item.name === additive.name) ? 'active' : ''}`} data-additive={additive.name} key={key} onClick={() => addAdditive(additive)} onMouseEnter={(e) => {handleMouseEnter(e, {price: additive.price.toString(), discountPrice: additive.discountPrice?.toString()}); setCurrentHoveredAdditive(key)}} onMouseLeave={() => {handleMouseLeave(); setCurrentHoveredAdditive(undefined)}}>
+                                    <span className="additInd">{key}</span>
+                                    <span>{t(additive.name)}</span>
+                                </button>
+                            })
+                        }
+                    </div>
+                    <div className="modal-price">
+                        <h3>{t("total")}:</h3>
+                        {
+                            (localStorage.getItem('token') && totalPriceWithDiscount < totalPrice) ? (
+                                <div style={{display:'flex', gap: '20px'}}>
+                                    {totalPriceWithDiscount === 0 ? (<h3 className="modal-price-text">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                                    ) : (
+                                        <>
+                                            <h3 className="modal-price-text">${parseFloat(totalPriceWithDiscount.toString()).toFixed(2)}</h3>
+                                            <h3 className="struck-through-price">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                                        </>
+                                    )}
+                                </div>
+                            ):(
+                                <h3 className="modal-price-text">${parseFloat(totalPrice.toString()).toFixed(2)}</h3>
+                            )
+                        }
+                    </div>
+                    <button className="add-to-cart-btn" onClick={
+                        () => {
+                            onClose();
+                            addToCart();
+                        }
+                    }>{t('add_to_cart')}</button>
+                </div>
+                <button className="close-modal-button" onClick={onClose}>
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1.34326 1.34314L12.657 12.6568" stroke="#E1D4C9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M1.34326 12.6569L12.657 1.34315" stroke="#E1D4C9" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+            {toolTip.visible && (
+                currentHoveredSize ? (
+                    <div className="size-tooltip" style={{left: toolTip.x,top: toolTip.y}}>
+                        {(product.sizes[currentHoveredSize].discountPrice && localStorage.getItem('token')) ? (
+                            <>
+                                <h3>${product.sizes[currentHoveredSize].discountPrice}</h3>
+                                <h3 className="struck-through-price">${product.sizes[currentHoveredSize].price}</h3>
+                            </>
+                        ) : (
+                            <h3>${product.sizes[currentHoveredSize].price}</h3>
+                        )}
+                    </div>
+                ) : currentHoveredAdditive !== undefined ? (
+                    <div className="size-tooltip" style={{left: toolTip.x, top: toolTip.y}}>
+                        {(product.additives[currentHoveredAdditive].discountPrice && localStorage.getItem('token')) ? (
+                            <>
+                                <h3>${product.additives[currentHoveredAdditive].discountPrice}</h3>
+                                <h3 className="struck-through-price">${product.additives[currentHoveredAdditive].price}</h3>
+                            </>
+                        ) : (
+                            <h3>${product.additives[currentHoveredAdditive].price}</h3>
+                        )}
+                    </div>
+                ) : (<></>)
+            )}
+        </div>):
+        (<></>)
+    }
+    </>
+}
+
+export default Modal
