@@ -9,7 +9,7 @@ import { SideBarProvider } from './context/SideBarProvider.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename='/coffee-business-house'>
       <ThemeProvider>
         <CartProvider>
           <SideBarProvider>
